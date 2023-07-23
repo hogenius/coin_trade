@@ -12,7 +12,7 @@ def GetBestK():
             if result < ror:
                 best_k = k
                 result = ror
-            print("%.1f %f" % (k, ror))
+            #print("%.1f %f" % (k, ror))
     except Exception as e:
         print(e)
     return best_k
@@ -31,4 +31,4 @@ def get_ror_by_df(df, k=0.5):
     #print("%.1f %f" % (k, ror))
     return ror
 
-print(f"GetBestK {GetBestK()}")
+#print(f"GetBestK {GetBestK()}")
