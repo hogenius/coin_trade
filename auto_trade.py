@@ -35,7 +35,7 @@ def get_current_price(ticker):
     return pyupbit.get_orderbook(ticker=ticker)["orderbook_units"][0]["ask_price"]
 
 # config load
-with open('config.yml') as f:
+with open('config.yaml') as f:
     config_data = yaml.load(f, Loader=yaml.FullLoader)
     access = config_data['key_access']
     secret = config_data['key_secret']
