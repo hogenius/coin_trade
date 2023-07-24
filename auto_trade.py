@@ -2,9 +2,10 @@ import time
 import pyupbit
 import datetime
 import find_best_k
+import yaml
 
-access = "[INPUT ACCESS KEY HERE!!!]"
-secret = "[INPUT SECRET KEY HERE!!!]"
+access = ""
+secret = ""
 
 def get_target_price(ticker, k):
     """변동성 돌파 전략으로 매수 목표가 조회"""
@@ -33,7 +34,13 @@ def get_current_price(ticker):
     """현재가 조회"""
     return pyupbit.get_orderbook(ticker=ticker)["orderbook_units"][0]["ask_price"]
 
-# 로그인
+# config load
+with open('config.yml') as f:
+    config_data = yaml.load(f, Loader=yaml.FullLoader)
+    access = config_data['key_access']
+    secret = config_data['key_secret']
+
+# login
 upbit = pyupbit.Upbit(access, secret)
 print("autotrade start")
 
