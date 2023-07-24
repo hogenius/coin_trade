@@ -23,7 +23,7 @@ def GetBestK():
     result = 0.0
     df = pyupbit.get_ohlcv("KRW-BTC",count=7)
     try:
-        for k in np.arange(0.3, 0.8, 0.1):
+        for k in np.arange(0.3, 0.7, 0.1):
             ror = get_ror_by_df(df, k)
             if result < ror:
                 best_k = k
