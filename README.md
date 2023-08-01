@@ -8,6 +8,9 @@
 ### pip install
 - pip3 install pyupbit
 - pip3 install pyyaml
+- pip3 install backtesting
+- pip install bokeh==2.4.3
+    https://github.com/kernc/backtesting.py/issues/803
 
 ### start
 - nohup python3 -u auto_trade.py > output.log &
