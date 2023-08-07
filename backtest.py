@@ -50,10 +50,12 @@ class SmaCross(Strategy):
             #print(f"next check {case1} / {case2}")
             if SmaCross.is_buy == False and case1 == False and case2 == True:
                 print(f"buy")
+                self.position.close()
                 self.buy()
                 SmaCross.is_buy = True
             elif SmaCross.is_buy == True and crossover(self.ma2, self.ma1):
                 print(f"sell")
+                self.position.close()
                 self.sell()
                 SmaCross.is_buy = False
         except IndexError:
