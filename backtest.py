@@ -2,9 +2,12 @@ import pyupbit
 import yaml
 import pandas
 
+from numbers import Number
+from typing import Sequence
 from backtesting import Backtest, Strategy
 from backtesting.lib import crossover
 from backtesting.test import SMA, GOOG
+
 
 access = ""
 secret = ""
@@ -15,19 +18,48 @@ ma_3 = 0
 ma_check_sec = 0
 
 class SmaCross(Strategy):
+    is_buy = False
+
     def init(self):
         price = self.data.Close
         self.ma1 = self.I(SMA, price, ma_1)
         self.ma2 = self.I(SMA, price, ma_2)
-        #self.ma3 = self.I(SMA, price, ma_3)
+        self.ma3 = self.I(SMA, price, ma_3)
 
     def next(self):
-        if crossover(self.ma1, self.ma2):
-            print(f"buy")
-            self.buy()
-        elif crossover(self.ma2, self.ma1):
-            print(f"sell")
-            self.sell()
+        try:
+            series1 = (
+                self.ma1.values if isinstance(self.ma1, pandas.Series) else
+                (self.ma1, self.ma1) if isinstance(self.ma1, Number) else
+                self.ma1)
+
+            series2 = (
+                self.ma2.values if isinstance(self.ma2, pandas.Series) else
+                (self.ma2, self.ma2) if isinstance(self.ma2, Number) else
+                self.ma2)
+
+            series3 = (
+                self.ma3.values if isinstance(self.ma3, pandas.Series) else
+                (self.ma3, self.ma3) if isinstance(self.ma3, Number) else
+                self.ma3)
+        
+        
+            #if crossover(self.ma1, self.ma2):
+            case1 = (series3[-2] < series2[-2] < series1[-2])
+            case2 = (series3[-1] < series2[-1] < series1[-1])
+            #print(f"next check {case1} / {case2}")
+            if SmaCross.is_buy == False and case1 == False and case2 == True:
+                print(f"buy")
+                self.buy()
+                SmaCross.is_buy = True
+            elif SmaCross.is_buy == True and crossover(self.ma2, self.ma1):
+                print(f"sell")
+                self.sell()
+                SmaCross.is_buy = False
+        except IndexError:
+            print("index error")
+        
+        
 
 print("autotrade start")
 
