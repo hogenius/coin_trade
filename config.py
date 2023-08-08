@@ -11,4 +11,5 @@ class ConfigInfo:
             self.ma_2 = config_data['ma_line_2']
             self.ma_3 = config_data['ma_line_3']
             self.ma_check_sec = config_data['ma_check_sec']
+            self.loop_sec = config_data['loop_sec']
     
