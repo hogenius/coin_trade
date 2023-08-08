@@ -51,29 +51,28 @@ print(f"autotrade check best k {best_k}")
 while True:
     try:
 
-        df = pyupbit.get_ohlcv(config.coin_name, count=config.ma_3)
-        df['MA_1'] = df['close'].rolling(config.ma_1).mean()
-        df['MA_2'] = df['close'].rolling(config.ma_2).mean()
-        df['MA_3'] = df['close'].rolling(config.ma_3).mean()
-        pandas.set_option('display.float_format', lambda x: '%.1f' % x)
-
-        last_data = df.iloc[(len(df)-1)]
-        data_ma_1 = last_data['MA_1']
-        data_ma_2 = last_data['MA_2']
-        data_ma_3 = last_data['MA_3']
-
-        print(f"{config.ma_1}ma:{data_ma_1}, {config.ma_2}ma:{data_ma_2}, {config.ma_3}ma:{data_ma_3}")
-
-        is_regulat_arr = (data_ma_3 < data_ma_2 < data_ma_1)
-
-        print(f"is_regulat_arr : {is_regulat_arr}")
-
         now = datetime.datetime.now()
         start_time = get_start_time("KRW-BTC") # 09:00
         end_time = start_time + datetime.timedelta(days=1) # 09:00 + 1일
 
         # 9시부터 < 현재 < 담날08:59:50까지 돌도록
         if start_time < now < end_time - datetime.timedelta(seconds=10):
+
+            df = pyupbit.get_ohlcv(config.coin_name, count=config.ma_3)
+            df['MA_1'] = df['close'].rolling(config.ma_1).mean()
+            df['MA_2'] = df['close'].rolling(config.ma_2).mean()
+            df['MA_3'] = df['close'].rolling(config.ma_3).mean()
+            pandas.set_option('display.float_format', lambda x: '%.1f' % x)
+
+            last_data = df.iloc[(len(df)-1)]
+            data_ma_1 = last_data['MA_1']
+            data_ma_2 = last_data['MA_2']
+            data_ma_3 = last_data['MA_3']
+
+            print(f"{config.ma_1}ma:{data_ma_1}, {config.ma_2}ma:{data_ma_2}, {config.ma_3}ma:{data_ma_3}")
+            is_regulat_arr = (data_ma_3 < data_ma_2 < data_ma_1)
+            print(f"is_regulat_arr : {is_regulat_arr}")
+
             target_price = get_target_price("KRW-BTC", best_k)
             current_price = get_current_price("KRW-BTC")
             if is_regulat_arr and target_price < current_price:
