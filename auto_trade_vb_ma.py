@@ -1,6 +1,8 @@
 """
 
 변동성 돌파 전략(Volatility Breakout)
++
+이동평균선 전략(Moving Average Line)
 
 """
 
