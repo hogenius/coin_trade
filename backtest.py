@@ -1,5 +1,4 @@
 import pyupbit
-import yaml
 import pandas
 
 from numbers import Number
@@ -7,24 +6,17 @@ from typing import Sequence
 from backtesting import Backtest, Strategy
 from backtesting.lib import crossover
 from backtesting.test import SMA, GOOG
-
-
-access = ""
-secret = ""
-coin_name = ""
-ma_1 = 0
-ma_2 = 0
-ma_3 = 0
-ma_check_sec = 0
+from config import ConfigInfo
+config = ConfigInfo()
 
 class SmaCross(Strategy):
     is_buy = False
 
     def init(self):
         price = self.data.Close
-        self.ma1 = self.I(SMA, price, ma_1)
-        self.ma2 = self.I(SMA, price, ma_2)
-        self.ma3 = self.I(SMA, price, ma_3)
+        self.ma1 = self.I(SMA, price, config.ma_1)
+        self.ma2 = self.I(SMA, price, config.ma_2)
+        self.ma3 = self.I(SMA, price, config.ma_3)
 
     def next(self):
         try:
@@ -65,19 +57,9 @@ class SmaCross(Strategy):
 
 print("autotrade start")
 
-with open('config.yaml') as f:
-    config_data = yaml.load(f, Loader=yaml.FullLoader)
-    access = config_data['key_access']
-    secret = config_data['key_secret']
-    coin_name = config_data['coin_name']
-    ma_1 = config_data['ma_line_1']
-    ma_2 = config_data['ma_line_2']
-    ma_3 = config_data['ma_line_3']
-    ma_check_sec = config_data['ma_check_sec']
+upbit = pyupbit.Upbit(config.access, config.secret)
 
-upbit = pyupbit.Upbit(access, secret)
-
-df = pyupbit.get_ohlcv(coin_name, count=200)
+df = pyupbit.get_ohlcv(config.coin_name, count=200)
 #df = df.drop(['value'], axis=1)
 #df['datetime'].dt.strftime('%Y-%m-%d')
 df = df.rename(columns={'open':'Open', 'high':'High', 'low':'Low', 'close':'Close', 'volume':'Volume'})
