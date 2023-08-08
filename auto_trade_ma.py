@@ -1,3 +1,9 @@
+"""
+
+이동평균선 전략(Moving Average Line)
+
+"""
+
 import time
 import pyupbit
 import pandas
