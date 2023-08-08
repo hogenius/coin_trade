@@ -1,15 +1,8 @@
 import time
 import pyupbit
-import yaml
 import pandas
-
-access = ""
-secret = ""
-coin_name = ""
-ma_1 = 0
-ma_2 = 0
-ma_3 = 0
-ma_check_sec = 0
+from config import ConfigInfo
+config = ConfigInfo()
 
 def get_balance(ticker):
     """잔고 조회"""
@@ -22,28 +15,17 @@ def get_balance(ticker):
                 return 0
     return 0
 
-# config load
-with open('config.yaml') as f:
-    config_data = yaml.load(f, Loader=yaml.FullLoader)
-    access = config_data['key_access']
-    secret = config_data['key_secret']
-    coin_name = config_data['coin_name']
-    ma_1 = config_data['ma_line_1']
-    ma_2 = config_data['ma_line_2']
-    ma_3 = config_data['ma_line_3']
-    ma_check_sec = config_data['ma_check_sec']
-
 # login
-upbit = pyupbit.Upbit(access, secret)
+upbit = pyupbit.Upbit(config.access, config.secret)
 print("autotrade start")
 
 while True:
     
     try:
-        df = pyupbit.get_ohlcv(coin_name, count=ma_3)
-        df['MA_1'] = df['close'].rolling(ma_1).mean()
-        df['MA_2'] = df['close'].rolling(ma_2).mean()
-        df['MA_3'] = df['close'].rolling(ma_3).mean()
+        df = pyupbit.get_ohlcv(config.coin_name, count=config.ma_3)
+        df['MA_1'] = df['close'].rolling(config.ma_1).mean()
+        df['MA_2'] = df['close'].rolling(config.ma_2).mean()
+        df['MA_3'] = df['close'].rolling(config.ma_3).mean()
         pandas.set_option('display.float_format', lambda x: '%.1f' % x)
 
         last_data = df.iloc[(len(df)-1)]
@@ -51,7 +33,7 @@ while True:
         data_ma_2 = last_data['MA_2']
         data_ma_3 = last_data['MA_3']
 
-        print(f"{ma_1}ma:{data_ma_1}, {ma_2}ma:{data_ma_2}, {ma_3}ma:{data_ma_3}")
+        print(f"{config.ma_1}ma:{data_ma_1}, {config.ma_2}ma:{data_ma_2}, {config.ma_3}ma:{data_ma_3}")
 
         if data_ma_3 < data_ma_2 < data_ma_1:
             #50일, 30일 , 10일 정배열이라면?
@@ -72,7 +54,7 @@ while True:
         else:
             print("do nothing..")
 
-        time.sleep(ma_check_sec)
+        time.sleep(config.ma_check_sec)
     except Exception as e:
         print(e)
-        time.sleep(ma_check_sec)
+        time.sleep(config.ma_check_sec)

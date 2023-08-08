@@ -2,10 +2,8 @@ import time
 import pyupbit
 import datetime
 import find_best_k
-import yaml
-
-access = ""
-secret = ""
+from config import ConfigInfo
+config = ConfigInfo()
 
 def get_target_price(ticker, k):
     """변동성 돌파 전략으로 매수 목표가 조회"""
@@ -41,7 +39,7 @@ with open('config.yaml') as f:
     secret = config_data['key_secret']
 
 # login
-upbit = pyupbit.Upbit(access, secret)
+upbit = pyupbit.Upbit(config.access,config.secret)
 print("autotrade start")
 
 best_k = find_best_k.GetBestK()

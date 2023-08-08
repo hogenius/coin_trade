@@ -1,0 +1,14 @@
+import yaml
+
+class ConfigInfo:
+    def __init__(self) -> None:
+        with open('config.yaml') as f:
+            config_data = yaml.load(f, Loader=yaml.FullLoader)
+            self.access = config_data['key_access']
+            self.secret = config_data['key_secret']
+            self.coin_name = config_data['coin_name']
+            self.ma_1 = config_data['ma_line_1']
+            self.ma_2 = config_data['ma_line_2']
+            self.ma_3 = config_data['ma_line_3']
+            self.ma_check_sec = config_data['ma_check_sec']
+    
