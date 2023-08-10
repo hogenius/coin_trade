@@ -56,7 +56,7 @@ while True:
         end_time = start_time + datetime.timedelta(days=1) # 09:00 + 1일
 
         # 9시부터 < 현재 < 담날08:59:50까지 돌도록
-        if start_time < now < end_time - datetime.timedelta(seconds=10):
+        if start_time < now < end_time - datetime.timedelta(seconds=config.loop_sec*2):
 
             df = pyupbit.get_ohlcv(config.coin_name, count=config.ma_3)
             df['MA_1'] = df['close'].rolling(config.ma_1).mean()
