@@ -12,4 +12,5 @@ class ConfigInfo:
             self.ma_3 = config_data['ma_line_3']
             self.ma_check_sec = config_data['ma_check_sec']
             self.loop_sec = config_data['loop_sec']
+            self.discord_hook = config_data['discord_hook']
     
