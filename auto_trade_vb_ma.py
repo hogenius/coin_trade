@@ -11,6 +11,7 @@ import pyupbit
 import datetime
 import find_best_k
 import pandas
+import msg_discord
 from config import ConfigInfo
 config = ConfigInfo()
 
@@ -41,12 +42,18 @@ def get_current_price(ticker):
     """현재가 조회"""
     return pyupbit.get_orderbook(ticker=ticker)["orderbook_units"][0]["ask_price"]
 
+def print_msg(msg, withDiscord=True):
+    print(msg)
+    if withDiscord:
+        msg_discord.send(msg)
+
 # login
 upbit = pyupbit.Upbit(config.access,config.secret)
-print("autotrade start")
+
+print_msg("autotrade start")
 
 best_k = find_best_k.GetBestK()
-print(f"autotrade check best k {best_k}")
+print_msg(f"autotrade check best k {best_k}")
 # 자동매매 시작
 while True:
     try:
@@ -82,17 +89,17 @@ while True:
                 if krw > 5000:
                     buy_krw = krw*0.9995
                     upbit.buy_market_order("KRW-BTC", buy_krw)
-                    print(f"autotrade buy_market_order {buy_krw}")
+                    print_msg(f"autotrade buy_market_order {buy_krw}")
         else:
             #전량 매도.
             btc = get_balance("BTC")
             if btc > 0.00008:
                 sell_btc = btc*0.9995
                 upbit.sell_market_order("KRW-BTC", sell_btc)
-                print(f"autotrade sell_market_order {sell_btc}")
+                print_msg(f"autotrade sell_market_order {sell_btc}")
             
             best_k = find_best_k.GetBestK()
-            print(f"autotrade check best k {best_k}")
+            print_msg(f"autotrade check best k {best_k}")
 
         #test = 1
         #print(f"autotrade check")

@@ -6,3 +6,4 @@ ma_line_2: 20
 ma_line_3: 50
 ma_check_sec: 10
 loop_sec: 60
+discord_hook: "[DISCORD_HOOK URL HERE!!!]"
