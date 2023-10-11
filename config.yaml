@@ -1,8 +1,9 @@
 key_access: "[INPUT ACCESS KEY HERE!!!]"
 key_secret: "[INPUT SECRET KEY HERE!!!]"
 coin_name: "KRW-BTC"
-ma_line_1: 10
-ma_line_2: 20
+ma_line_1: 2
+ma_line_2: 7
 ma_line_3: 50
 ma_check_sec: 10
 loop_sec: 60
+discord_hook: "[DISCORD_HOOK URL HERE!!!]"
