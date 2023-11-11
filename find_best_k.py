@@ -18,10 +18,10 @@ def GetCeil(k, number_decimal_place):
     return k
 
 
-def GetBestK():
+def GetBestK(coin_nam="KRW-BTC"):
     best_k = 0.1
     result = 0.0
-    df = pyupbit.get_ohlcv("KRW-BTC",count=30)
+    df = pyupbit.get_ohlcv(coin_nam,count=30)
     try:
         for k in np.arange(0.3, 0.8, 0.1):
             ror = get_ror_by_df(df, k)
