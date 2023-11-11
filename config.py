@@ -13,4 +13,4 @@ class ConfigInfo:
             self.ma_check_sec = config_data['ma_check_sec']
             self.loop_sec = config_data['loop_sec']
             self.discord_hook = config_data['discord_hook']
-    
+            self.list_coin = config_data['list_coin']
