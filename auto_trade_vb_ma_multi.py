@@ -16,7 +16,7 @@ import pandas
 import msg_discord
 from config import ConfigInfo
 config = ConfigInfo()
-is_test = True
+is_test = False
 list_coin_info = []
 
 
