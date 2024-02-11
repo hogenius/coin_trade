@@ -38,7 +38,7 @@ def CheckTicker(ticker, listTickerSpike):
 
     print(f"CheckTicker:{ticker}")
     listTickerSpike.clear()
-    df = pyupbit.get_ohlcv(ticker['market'], interval="minutes3", count=200)
+    df = pyupbit.get_ohlcv(ticker['market'], interval="minutes3", count=100)
     #print(df)
 
     list_volume = df['volume'].tolist()
@@ -70,6 +70,7 @@ MakeTickerList(list_ticker, list_ticker_warning)
 
 for ticker in list_ticker:
     CheckTicker(ticker, list_spike)
+    time.sleep(0.1)
 
 print(f"list_spike : {list_spike}")
     
