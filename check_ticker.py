@@ -13,6 +13,13 @@ list_ticker = []
 list_ticker_warning = []
 list_spike = []
 
+def print_msg(msg, withDiscord=True):
+    if is_test:
+        msg = 'TestMode:' + msg
+    print(msg)
+    if withDiscord:
+        msg_discord.send(msg)
+
 def MakeTickerList(listTicker, listTickerWarning):
 
     listTicker.clear()
@@ -32,13 +39,13 @@ def MakeTickerList(listTicker, listTickerWarning):
     #print(list_ticker_warning)
     #print(f"list_coin_info_warning count: {len(list_ticker_warning)}")
 
-OUTLIER_COUNT = 5
+OUTLIER_COUNT = 25
 
 def CheckTicker(ticker, listTickerSpike):
 
     print(f"CheckTicker:{ticker}")
     listTickerSpike.clear()
-    df = pyupbit.get_ohlcv(ticker['market'], interval="minutes3", count=100)
+    df = pyupbit.get_ohlcv(ticker['market'], interval="minutes3", count=200)
     #print(df)
 
     list_volume = df['volume'].tolist()
@@ -66,25 +73,18 @@ def CheckTicker(ticker, listTickerSpike):
     if (stdev_volume_before * 2.0) < stdev_volume:
         listTickerSpike.append(ticker)
 
-MakeTickerList(list_ticker, list_ticker_warning)
-
-for ticker in list_ticker:
-    CheckTicker(ticker, list_spike)
-    time.sleep(0.1)
-
-print(f"list_spike : {list_spike}")
-    
-
-
 
 # 체크 시작
-'''
 while True:
     try:
-        CheckSpike()
+        MakeTickerList(list_ticker, list_ticker_warning)
 
-        time.sleep(config.loop_sec)
+        for ticker in list_ticker:
+            CheckTicker(ticker, list_spike)
+            time.sleep(0.1)
+        
+        print_msg(f"list_spike : {list_spike}")
+        time.sleep(config.loop_check_sec)
     except Exception as e:
         print(e)
-        time.sleep(config.loop_sec)
-'''
+        time.sleep(config.loop_check_sec)

@@ -6,6 +6,7 @@ ma_line_2: 7
 ma_line_3: 50
 ma_check_sec: 10
 loop_sec: 60
+loop_check_sec: 120
 discord_hook: "[DISCORD_HOOK URL HERE!!!]"
 list_coin:
 - name: "KRW-BTC"
