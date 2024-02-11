@@ -71,8 +71,11 @@ def CheckTicker(ticker, listTickerSpike):
     stdev_volume = stdev(list_volume)
 
     if (stdev_volume_before * 2.0) < stdev_volume:
-        listTickerSpike.append(ticker)
-
+        listTickerSpike.append({
+            'name':ticker, 
+            'stdev_volume_before':stdev_volume_before,
+            'stdev_volume':stdev_volume
+            })
 
 # 체크 시작
 while True:
@@ -83,7 +86,11 @@ while True:
             CheckTicker(ticker, list_spike)
             time.sleep(0.1)
         
-        print_msg(f"list_spike : {list_spike}")
+        if(0 < len(list_spike) ):
+            print_msg(f"spike coin find!! : {list_spike}")
+        #else:
+        #    print_msg("no spike coin..")
+
         time.sleep(config.loop_check_sec)
     except Exception as e:
         print(e)
