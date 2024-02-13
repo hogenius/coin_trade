@@ -76,6 +76,8 @@ def CheckTicker(ticker, listTickerSpike):
             'stdev_volume_before':stdev_volume_before,
             'stdev_volume':stdev_volume
             })
+        
+print_msg(f"check ticker start")
 
 # 체크 시작
 while True:
