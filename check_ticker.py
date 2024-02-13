@@ -39,7 +39,7 @@ def MakeTickerList(listTicker, listTickerWarning):
     #print(list_ticker_warning)
     #print(f"list_coin_info_warning count: {len(list_ticker_warning)}")
 
-OUTLIER_COUNT = 25
+OUTLIER_COUNT = 3
 
 def CheckTicker(ticker, listTickerSpike):
 
