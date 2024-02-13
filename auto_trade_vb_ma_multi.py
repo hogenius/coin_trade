@@ -142,6 +142,7 @@ while True:
 
             now = datetime.datetime.now()
             start_time = get_start_time("KRW-BTC") # 09:00 대표시간으로 BTC를 사용합니다.
+            start_time = start_time - datetime.timedelta(hours=2) # 07:00 매도시간을 2시간 앞당깁니다.
             end_time = start_time + datetime.timedelta(days=1) # 09:00 + 1일
             coin_name = list_coin_info[i]['name']
 
