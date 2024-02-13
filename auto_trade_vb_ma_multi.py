@@ -94,6 +94,13 @@ def check_available_krw(list):
 
     krw_total = get_balance("KRW")
 
+    #이미 보유하고 있는 코인이면 구매한것으로 간주합니다.
+    balances = upbit.get_balances()
+    for b in balances:
+        for i in range(len(list)):    
+            if b['currency'] == list[i]['name'].replace('KRW-', ''):
+                list[i]['is_buy'] = True
+
     is_need_noti = False
     list_rate = []
 
