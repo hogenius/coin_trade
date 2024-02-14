@@ -92,11 +92,16 @@ def make_coin_list(list):
 def check_available_krw(list):
     #보유하고 있는 현금을 기준으로 비율을 정산합니다.
 
-    krw_total = get_balance("KRW")
+    #krw_total = get_balance("KRW")
 
     #이미 보유하고 있는 코인이면 구매한것으로 간주합니다.
     balances = upbit.get_balances()
     for b in balances:
+
+        if b['currency'] == "KRW" and (b['balance'] is not None) :
+            krw_total = float(b['balance'])
+            continue
+
         for i in range(len(list)):    
             if b['currency'] == list[i]['name'].replace('KRW-', '') and (b['balance'] is not None) and 0.01 < float(b['balance']) :
                 list[i]['is_buy'] = True
