@@ -98,7 +98,7 @@ def check_available_krw(list):
     balances = upbit.get_balances()
     for b in balances:
         for i in range(len(list)):    
-            if b['currency'] == list[i]['name'].replace('KRW-', ''):
+            if b['currency'] == list[i]['name'].replace('KRW-', '') and (b['balance'] is not None) and 0.01 < float(b['balance']) :
                 list[i]['is_buy'] = True
 
     is_need_noti = False
