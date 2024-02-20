@@ -9,6 +9,7 @@
 - pip3 install pyupbit
 - pip3 install pyyaml
 - pip3 install backtesting
+- pip3 install python-telegram-bot
 - pip install bokeh==2.4.3
     https://github.com/kernc/backtesting.py/issues/803
 
