@@ -14,4 +14,6 @@ class ConfigInfo:
             self.loop_sec = config_data['loop_sec']
             self.loop_check_sec = config_data['loop_check_sec']
             self.discord_hook = config_data['discord_hook']
+            self.telegram_token = config_data['telegram_token']
+            self.telegram_chat_id = config_data['telegram_chat_id']
             self.list_coin = config_data['list_coin']
