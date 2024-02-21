@@ -150,19 +150,31 @@ while True:
         is_need_refesh = False
         balances = upbit.get_balances()
 
+        now = datetime.datetime.now()
+        end_time = now.replace(hour=7, minute=0, second=0, microsecond=0)
+        start_time = end_time - datetime.timedelta(seconds=config.loop_sec*3)
+
         for i in range(len(list_coin_info)):
 
-            now = datetime.datetime.now()
-            start_time = get_start_time("KRW-BTC") # 09:00 대표시간으로 BTC를 사용합니다.
-            start_time = start_time - datetime.timedelta(hours=2) # 07:00 매도시간을 2시간 앞당깁니다.
-            end_time = start_time + datetime.timedelta(days=1) # 09:00 + 1일
             coin_name = list_coin_info[i]['name']
 
-            # 9시부터 < 현재 < 담날08:59:50까지 돌도록
-            if start_time < now < end_time - datetime.timedelta(seconds=config.loop_sec*3):
+            #KST 06:57 ~ 07:00동안은 매도프로세스를 진행합니다.
+            if start_time < now < end_time:
+                #매도 프로세스 시작.
+                #전량 매도.
+                coin_name_pure = coin_name.replace('KRW-', '')
+                #print(f"coin {coin_name} -> {coin_name_pure}")
+                coin_balance = get_balance(coin_name_pure)
+                if coin_balance > 0.00008:
+                    sell_coin = coin_balance*0.9995
+                    if is_test == False:
+                        upbit.sell_market_order(coin_name, sell_coin)
+                    print_msg(f"autotrade sell_market_order {coin_name}:{sell_coin}")
+                
+                is_need_refesh = True
 
+            else:
                 #매수 프로세스 체크 시작.
-
                 if list_coin_info[i]['is_buy'] == True:
 
                     #매수도 했었고 그에 이어서 매도도 했었다면 더이상 할게 없다.
@@ -240,19 +252,6 @@ while True:
                             list_coin_info[i]['is_buy'] = True
 
                             #print(f"after buy list_coin_info : {list_coin_info}")
-
-            else:
-                #전량 매도.
-                coin_name_pure = coin_name.replace('KRW-', '')
-                #print(f"coin {coin_name} -> {coin_name_pure}")
-                coin_balance = get_balance(coin_name_pure)
-                if coin_balance > 0.00008:
-                    sell_coin = coin_balance*0.9995
-                    if is_test == False:
-                        upbit.sell_market_order(coin_name, sell_coin)
-                    print_msg(f"autotrade sell_market_order {coin_name}:{sell_coin}")
-                
-                is_need_refesh = True
 
         #초기화 구문.
         if is_need_refesh:    
