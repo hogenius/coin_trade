@@ -13,7 +13,7 @@ import find_best_k
 import pandas
 import msg_discord
 from config import ConfigInfo
-config = ConfigInfo()
+config = ConfigInfo.Instance()
 
 def get_target_price(ticker, k):
     """변동성 돌파 전략으로 매수 목표가 조회"""

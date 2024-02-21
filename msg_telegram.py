@@ -6,7 +6,7 @@ from telegram.ext import (
 import asyncio
 import datetime
 from config import ConfigInfo
-config = ConfigInfo()
+config = ConfigInfo.Instance()
 bot = telegram.Bot(config.telegram_token)
 
 def send(msg):
@@ -17,8 +17,9 @@ def send(msg):
 
 async def help_handler(update, context):
     await bot.send_message(chat_id=config.telegram_chat_id, text=str(context))
-    
-app = Application.builder().token(config.telegram_token).build()
-app.add_handler(CommandHandler("help", help_handler))
-app.run_polling()
+
+if __name__ == '__main__':
+    app = Application.builder().token(config.telegram_token).build()
+    app.add_handler(CommandHandler("help", help_handler))
+    app.run_polling()
 

@@ -8,7 +8,7 @@ import time
 import pyupbit
 import pandas
 from config import ConfigInfo
-config = ConfigInfo()
+config = ConfigInfo.Instance()
 
 def get_balance(ticker):
     """잔고 조회"""

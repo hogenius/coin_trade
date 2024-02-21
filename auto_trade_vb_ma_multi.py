@@ -13,10 +13,11 @@ import pyupbit
 import datetime
 import find_best_k
 import pandas
-import msg_discord
+import msg_discord as MsgService
+#import msg_telegram as MsgService
 from config import ConfigInfo
-config = ConfigInfo()
-is_test = False
+config = ConfigInfo.Instance()
+is_test = True
 list_coin_info = []
 
 
@@ -63,12 +64,12 @@ def get_revenue_rate(balances, ticker):
 
     return revenue_rate
 
-def print_msg(msg, withDiscord=True):
+def print_msg(msg, withNotification=True):
     if is_test:
         msg = 'TestMode:' + msg
     print(msg)
-    if withDiscord:
-        msg_discord.send(msg)
+    if withNotification:
+        MsgService.send(msg)
 
 def make_coin_list(list):
 

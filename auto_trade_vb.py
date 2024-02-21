@@ -9,7 +9,7 @@ import pyupbit
 import datetime
 import find_best_k
 from config import ConfigInfo
-config = ConfigInfo()
+config = ConfigInfo.Instance()
 
 def get_target_price(ticker, k):
     """변동성 돌파 전략으로 매수 목표가 조회"""

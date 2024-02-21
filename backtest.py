@@ -7,7 +7,7 @@ from backtesting import Backtest, Strategy
 from backtesting.lib import crossover
 from backtesting.test import SMA, GOOG
 from config import ConfigInfo
-config = ConfigInfo()
+config = ConfigInfo.Instance()
 
 class SmaCross(Strategy):
     is_buy = False
@@ -59,7 +59,7 @@ print("autotrade start")
 
 upbit = pyupbit.Upbit(config.access, config.secret)
 
-df = pyupbit.get_ohlcv(config.coin_name, count=200)
+df = pyupbit.get_ohlcv(config.coin_name, count=1000)
 #df = df.drop(['value'], axis=1)
 #df['datetime'].dt.strftime('%Y-%m-%d')
 df = df.rename(columns={'open':'Open', 'high':'High', 'low':'Low', 'close':'Close', 'volume':'Volume'})

@@ -7,7 +7,7 @@ import pandas
 import msg_discord
 from config import ConfigInfo
 from statistics import stdev
-config = ConfigInfo()
+config = ConfigInfo.Instance()
 is_test = True
 list_ticker = []
 list_ticker_warning = []

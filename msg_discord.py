@@ -1,7 +1,7 @@
 import requests
 import datetime
 from config import ConfigInfo
-config = ConfigInfo()
+config = ConfigInfo.Instance()
 
 def send(msg):
     now = datetime.datetime.now()

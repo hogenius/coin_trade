@@ -1,7 +1,20 @@
 import yaml
 
-class ConfigInfo:
-    def __init__(self) -> None:
+class SingletonInstane:
+  __instance = None
+
+  @classmethod
+  def __getInstance(cls):
+    return cls.__instance
+
+  @classmethod
+  def Instance(cls, *args, **kargs):
+    cls.__instance = cls(*args, **kargs)
+    cls.Instance = cls.__getInstance
+    return cls.__instance
+
+class ConfigInfo(SingletonInstane):
+    def __init__(self):
         with open('config.yaml') as f:
             config_data = yaml.load(f, Loader=yaml.FullLoader)
             self.access = config_data['key_access']
