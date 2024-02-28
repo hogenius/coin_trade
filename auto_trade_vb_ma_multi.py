@@ -17,7 +17,7 @@ import msg_discord as MsgService
 #import msg_telegram as MsgService
 from config import ConfigInfo
 config = ConfigInfo.Instance()
-is_test = False
+is_test = True
 list_coin_info = []
 
 
@@ -232,7 +232,7 @@ while True:
 
                     #1번 이동평균이 2번 이동평균선보다 이상이면 정배열로 간주한다.
                     is_regulat_arr = (data_ma_2 < data_ma_1)
-                    print(f"is_regulat_arr : {is_regulat_arr}")
+                    #print(f"is_regulat_arr : {is_regulat_arr}")
 
                     target_price = get_target_price(coin_name, list_coin_info[i]['best_k'])
                     current_price = get_current_price(coin_name)
@@ -240,6 +240,7 @@ while True:
                     #이동평균선 정배열이면서 best_k에 의해 변동성이 돌파했다면?! 매수 가즈아
                     if is_regulat_arr and target_price < current_price:
                         
+                        print(f"is_regulat_arr && target_price:{target_price} < current_price:{current_price}")
                         krw_total = get_balance("KRW")
                         krw = list_coin_info[i]['krw_avaiable']
 
@@ -251,6 +252,7 @@ while True:
                             buy_krw = krw*0.9995
                             if is_test == False:
                                 upbit.buy_market_order(coin_name, buy_krw)
+
                             print_msg(f"autotrade buy_market_order {coin_name}:{buy_krw}")
 
                             #매수한것으로 표기. 하루에 반복적으로 구매 하지 않습니다.
@@ -258,6 +260,8 @@ while True:
                             list_coin_info[i]['is_buy'] = True
 
                             #print(f"after buy list_coin_info : {list_coin_info}")
+                        else:
+                            print_msg(f"autotrade not enough money to buy_market_order {coin_name}. krw:{krw}")
 
         #초기화 구문.
         if is_need_refesh:    
