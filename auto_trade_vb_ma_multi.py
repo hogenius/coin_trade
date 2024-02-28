@@ -155,6 +155,9 @@ while True:
         end_time = now.replace(hour=7, minute=0, second=0, microsecond=0)
         start_time = end_time - datetime.timedelta(seconds=config.loop_sec*3)
 
+        start_time_wait = end_time
+        end_time_wait = now.replace(hour=9, minute=0, second=0, microsecond=0)
+
         for i in range(len(list_coin_info)):
 
             coin_name = list_coin_info[i]['name']
@@ -173,7 +176,9 @@ while True:
                     print_msg(f"autotrade sell_market_order {coin_name}:{sell_coin}")
                 
                 is_need_refesh = True
-
+            elif start_time_wait <= now <= end_time_wait:
+                #do nothing..
+                continue
             else:
                 #매수 프로세스 체크 시작.
                 if list_coin_info[i]['is_buy'] == True:
