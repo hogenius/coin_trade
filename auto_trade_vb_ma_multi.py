@@ -17,7 +17,7 @@ import msg_discord as MsgService
 #import msg_telegram as MsgService
 from config import ConfigInfo
 config = ConfigInfo.Instance()
-is_test = True
+is_test = False
 list_coin_info = []
 
 
