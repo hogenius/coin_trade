@@ -7,7 +7,8 @@
 비율에 따른 선택적 코인 매수 매도
 
 """
-
+import asyncio
+import schedule
 import time
 import pyupbit
 import datetime
@@ -15,6 +16,7 @@ import find_best_k
 import pandas
 import msg_discord as MsgService
 #import msg_telegram as MsgService
+import check_ticker
 from config import ConfigInfo
 config = ConfigInfo.Instance()
 is_test = False
@@ -137,14 +139,9 @@ def check_available_krw(list):
     if is_need_noti:
         print_msg(f"available_krw change : {list_rate}")
 
+def coin_process():
 
-# login
-upbit = pyupbit.Upbit(config.access,config.secret)
-print_msg(f"autotrade start")
-make_coin_list(list_coin_info)
-
-# 자동매매 시작
-while True:
+    # 자동매매 시작
     try:
         check_available_krw(list_coin_info)
 
@@ -273,7 +270,22 @@ while True:
 
         #best_k = find_best_k.GetBestK()
         #print(f"autotrade check best k {best_k}")
-        time.sleep(config.loop_sec)
     except Exception as e:
         print(e)
-        time.sleep(config.loop_sec)
+
+async def main_async():
+    print_msg(f"auto trade start")
+    make_coin_list(list_coin_info)
+    while True:
+        coin_process()
+        await asyncio.sleep(config.loop_sec)
+        
+if __name__ == '__main__':
+
+    upbit = pyupbit.Upbit(config.access,config.secret)
+
+    loop = asyncio.get_event_loop()
+    loop.create_task(main_async())
+    #loop.create_task(msg_async())
+    #loop.create_task(check_async())
+    loop.run_forever()
