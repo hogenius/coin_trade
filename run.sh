@@ -27,10 +27,10 @@ function stop_program() {
 
 # 매개변수 처리
 
-if [ "$2" == "start" ]; then
-  start_program "$1"
-elif [ "$2" == "stop" ]; then
-  stop_program "$1"
+if [ "$1" == "start" ]; then
+  start_program "$2"
+elif [ "$1" == "stop" ]; then
+  stop_program "$2"
 else
-  echo "사용법: $SCRIPT_NAME 실행_파일_명 start|stop"
+  echo "사용법: $SCRIPT_NAME start|stop 실행_파일_명"
 fi
