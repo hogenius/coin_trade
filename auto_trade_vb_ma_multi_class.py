@@ -14,14 +14,26 @@ import find_best_k
 import pandas
 from msg_telegram import Messaging
 from config import ConfigInfo
+from dock import CoinInfo
 
-class CoinTrade:
+class CoinTrade(CoinInfo):
 
-    def __init__(self, upbit, isTest):
+    def __init__(self, name, upbit, isTest):
+        super().__init__(name)
         self.is_test = isTest
         self.upbit = upbit
         self.list_coin_info = []
         self.config = ConfigInfo.Instance()
+        
+    def BuyCoin(self, coinName):
+        print(f"CoinTrade BuyCoin : {coinName}!!!!!!!!!")
+        for i in range(len(self.list_coin_info)):
+            coin_info = self.list_coin_info[i]
+            if coin_info['name'] != "CHECK":
+                continue
+            else:
+                coin_info['name'] = coinName
+                self.coin_buy(coin_info)
 
     async def InitRoutine(self):
         #self.print_msg(f"auto trade start")
@@ -104,6 +116,7 @@ class CoinTrade:
 
         #이미 보유하고 있는 코인이면 구매한것으로 간주합니다.
         balances = self.upbit.get_balances()
+        #print(f"check_available_krw : {balances}")
         for b in balances:
 
             if b['currency'] == "KRW" and (b['balance'] is not None) :

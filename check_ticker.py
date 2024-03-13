@@ -3,10 +3,12 @@ import pyupbit
 from config import ConfigInfo
 from statistics import stdev
 from msg_telegram import Messaging
+from dock import DockInfo, DockManager, CoinInfo
 
-class CheckTicker:
+class CheckTicker(DockInfo):
     
-    def __init__(self, isTest):
+    def __init__(self, name, isTest):
+        super().__init__(name)
         self.OUTLIER_COUNT = 3
         self.is_test = isTest
         self.config = ConfigInfo.Instance()
@@ -101,7 +103,7 @@ class CheckTicker:
             count += 1
             await asyncio.sleep(0.1)
 
-            if self.is_test and 10 <= count:
+            if self.is_test and 5 <= count:
                 break
         
         if(0 < len(self.list_spike) ):
@@ -109,4 +111,8 @@ class CheckTicker:
         else:
             if self.is_test:
                 self.print_msg(f"no spike coin..")
+                dock = DockManager.Instance().GetDock("TRADER")
+                if isinstance(dock, CoinInfo):
+                    dock.BuyCoin("ho_coin");
+
             
