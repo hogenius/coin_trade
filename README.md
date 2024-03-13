@@ -10,6 +10,7 @@
 - pip3 install pyyaml
 - pip3 install backtesting
 - pip3 install python-telegram-bot
+- pip3 install asyncio
 - pip3 install schedule
 - pip install bokeh==2.4.3
     https://github.com/kernc/backtesting.py/issues/803
