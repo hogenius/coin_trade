@@ -14,7 +14,7 @@ if __name__ == '__main__':
     upbit = pyupbit.Upbit(ConfigInfo.Instance().access, ConfigInfo.Instance().secret)
 
     loop = asyncio.get_event_loop()
-    loop.create_task(Messaging.Instance().RoutineMsg(is_test))
+    loop.create_task(Messaging.Instance().RoutineMsg())
     #loop.create_task(test_class(upbit, is_test).InitRoutine())
     loop.create_task(CoinTrade(upbit, is_test).InitRoutine())
 

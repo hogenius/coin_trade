@@ -26,7 +26,7 @@ class Messaging(SingletonInstane):
             message = f"[{now.strftime('%Y-%m-%d %H:%M:%S')}]\n{str(msg)}"
         self.queue_msg.put(message)
 
-    async def RoutineMsg(self, isTest):
+    async def RoutineMsg(self):
         while True:
             if 0 < self.queue_msg.qsize():
                 msg = self.queue_msg.get()
