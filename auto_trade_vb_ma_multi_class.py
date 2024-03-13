@@ -144,6 +144,46 @@ class CoinTrade:
         if is_need_noti:
             self.print_msg(f"available_krw change : {list_rate}")
 
+    def coin_buy(self, coinInfo):
+        
+        krw_total = self.get_balance("KRW")
+        krw = coinInfo['krw_avaiable']
+
+        #보완처리. 비율료 계산되었던 현금가용액이 실제 보유현금액보다 크다?
+        if krw_total < krw:
+            krw = krw_total
+
+        if krw > 5000:
+            buy_krw = krw*0.9995
+            if self.is_test == False:
+                self.upbit.buy_market_order(coinInfo['name'], buy_krw)
+
+            self.print_msg(f"autotrade buy_market_order {coinInfo['name']}:{buy_krw}")
+
+            #매수한것으로 표기. 하루에 반복적으로 구매 하지 않습니다.
+            #하루가 지나서 전량 매도가 되기전에 사용자 임의로 매도를 할수 있도록 말이죠.
+            coinInfo['is_buy'] = True
+
+            #print(f"after buy list_coin_info : {list_coin_info}")
+        else:
+            self.print_msg(f"autotrade not enough money to buy_market_order {coinInfo['name']}. krw:{krw}")
+
+    def coin_sell(self, coinInfo):
+        
+        result = False
+        coin_name_pure = coinInfo['name'].replace('KRW-', '')
+        coin_balance = self.get_balance(coin_name_pure)
+        if coin_balance > 0.00008:
+            sell_coin = coin_balance*0.9995
+            if self.is_test == False:
+                self.upbit.sell_market_order(coinInfo['name'], sell_coin)
+            result = True
+            self.print_msg(f"autotrade sell_market_order {coinInfo['name']}:{sell_coin}")
+            coinInfo['is_sell'] = True
+        
+        return result
+       
+
     def coin_process(self):
 
         # 자동매매 시작
@@ -168,15 +208,7 @@ class CoinTrade:
                 if start_time < now < end_time:
                     #매도 프로세스 시작.
                     #전량 매도.
-                    coin_name_pure = coin_name.replace('KRW-', '')
-                    #print(f"coin {coin_name} -> {coin_name_pure}")
-                    coin_balance = self.get_balance(coin_name_pure)
-                    if coin_balance > 0.00008:
-                        sell_coin = coin_balance*0.9995
-                        if self.is_test == False:
-                            self.upbit.sell_market_order(coin_name, sell_coin)
-                        self.print_msg(f"autotrade sell_market_order {coin_name}:{sell_coin}")
-                    
+                    self.coin_sell(self.list_coin_info[i])
                     is_need_refesh = True
                 elif start_time_wait <= now <= end_time_wait:
                     #do nothing..
@@ -206,14 +238,7 @@ class CoinTrade:
 
                             if is_need_sell:
                                 #전량 매도.
-                                coin_name_pure = coin_name.replace('KRW-', '')
-                                coin_balance = self.get_balance(coin_name_pure)
-                                if coin_balance > 0.00008:
-                                    sell_coin = coin_balance*0.9995
-                                    if self.is_test == False:
-                                        self.upbit.sell_market_order(coin_name, sell_coin)
-                                    self.print_msg(f"autotrade sell_market_order {coin_name}:{sell_coin}")
-                                    self.list_coin_info[i]['is_sell'] = True
+                                self.coin_sell(self.list_coin_info[i])
 
                     else:
                         #이동평균선을 구한다.
@@ -241,29 +266,8 @@ class CoinTrade:
 
                         #이동평균선 정배열이면서 best_k에 의해 변동성이 돌파했다면?! 매수 가즈아
                         if is_regulat_arr and target_price < current_price:
-                            
                             print(f"is_regulat_arr && target_price:{target_price} < current_price:{current_price}")
-                            krw_total = self.get_balance("KRW")
-                            krw = self.list_coin_info[i]['krw_avaiable']
-
-                            #보완처리. 비율료 계산되었던 현금가용액이 실제 보유현금액보다 크다?
-                            if krw_total < krw:
-                                krw = krw_total
-
-                            if krw > 5000:
-                                buy_krw = krw*0.9995
-                                if self.is_test == False:
-                                    self.upbit.buy_market_order(coin_name, buy_krw)
-
-                                self.print_msg(f"autotrade buy_market_order {coin_name}:{buy_krw}")
-
-                                #매수한것으로 표기. 하루에 반복적으로 구매 하지 않습니다.
-                                #하루가 지나서 전량 매도가 되기전에 사용자 임의로 매도를 할수 있도록 말이죠.
-                                self.list_coin_info[i]['is_buy'] = True
-
-                                #print(f"after buy list_coin_info : {list_coin_info}")
-                            else:
-                                self.print_msg(f"autotrade not enough money to buy_market_order {coin_name}. krw:{krw}")
+                            self.coin_buy(self.list_coin_info[i])
 
             #초기화 구문.
             if is_need_refesh:    
@@ -277,20 +281,3 @@ class CoinTrade:
             #print(f"autotrade check best k {best_k}")
         except Exception as e:
             print(e)
-
-# async def main_async():
-#     print_msg(f"auto trade start")
-#     make_coin_list(list_coin_info)
-#     while True:
-#         coin_process()
-#         await asyncio.sleep(config.loop_sec)
-        
-# if __name__ == '__main__':
-
-#     upbit = pyupbit.Upbit(config.access,config.secret)
-
-#     loop = asyncio.get_event_loop()
-#     loop.create_task(main_async())
-#     #loop.create_task(msg_async())
-#     #loop.create_task(check_async())
-#     loop.run_forever()
