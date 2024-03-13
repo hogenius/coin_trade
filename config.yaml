@@ -23,3 +23,7 @@ list_coin:
   rate: 1000
   rate_profit: 0.0
   rate_stop_loss: 0.0
+- name: "CHECK"
+  rate: 0
+  rate_profit: 0.0
+  rate_stop_loss: 0.0
