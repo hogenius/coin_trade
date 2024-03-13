@@ -24,7 +24,7 @@ class CoinTrade:
         self.config = ConfigInfo.Instance()
 
     async def InitRoutine(self):
-        self.print_msg(f"auto trade start")
+        #self.print_msg(f"auto trade start")
         self.make_coin_list(self.list_coin_info)
         while True:
             self.coin_process()

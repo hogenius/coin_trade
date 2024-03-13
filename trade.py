@@ -1,9 +1,10 @@
 import asyncio
 import pyupbit
 from config import ConfigInfo
-#from test import test_class
+from test import test_class
 from auto_trade_vb_ma_multi_class import CoinTrade
 from msg_telegram import Messaging
+from check_ticker import CheckTicker
 is_test = False
 
 if __name__ == '__main__':
@@ -17,6 +18,7 @@ if __name__ == '__main__':
     loop.create_task(Messaging.Instance().RoutineMsg())
     #loop.create_task(test_class(upbit, is_test).InitRoutine())
     loop.create_task(CoinTrade(upbit, is_test).InitRoutine())
+    loop.create_task(CheckTicker(is_test).InitRoutine())
 
     Messaging.Instance().InitHandler()
     loop.run_forever()

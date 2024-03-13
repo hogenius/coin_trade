@@ -24,6 +24,7 @@ class Messaging(SingletonInstane):
             message = f"TestMode\n[{now.strftime('%Y-%m-%d %H:%M:%S')}]\n{str(msg)}"
         else:
             message = f"[{now.strftime('%Y-%m-%d %H:%M:%S')}]\n{str(msg)}"
+        print(message)
         self.queue_msg.put(message)
 
     async def RoutineMsg(self):
