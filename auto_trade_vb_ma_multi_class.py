@@ -14,25 +14,36 @@ import find_best_k
 import pandas
 from msg_telegram import Messaging
 from config import ConfigInfo
-from dock import CoinInfo
+from event import EventManager
 
-class CoinTrade(CoinInfo):
+class CoinTrade:
 
     def __init__(self, name, upbit, isTest):
-        super().__init__(name)
         self.is_test = isTest
         self.upbit = upbit
         self.list_coin_info = []
         self.config = ConfigInfo.Instance()
+        EventManager.Instance().Regist("BUY_COIN_LIST", self.BuyCoinList)
+
+    def BuyCoinList(self, listCoin):
+
+        if len(listCoin) <= 0:
+            return
         
-    def BuyCoin(self, coinName):
-        print(f"CoinTrade BuyCoin : {coinName}!!!!!!!!!")
+        # 'name':ticker, 
+        # 'stdev_volume_before':stdev_volume_before,
+        # 'stdev_volume':stdev_volume
+        
+        listCoin.sort(key=lambda x: x['stdev_volume'], reverse=True)
+        print(f"BuyCoinList BuyCoin : {listCoin}")
+        #아직은 작업중이니 이벤트가 들어와도 진행을 멈춥니다.
+        return
         for i in range(len(self.list_coin_info)):
             coin_info = self.list_coin_info[i]
             if coin_info['name'] != "CHECK":
                 continue
             else:
-                coin_info['name'] = coinName
+                coin_info['name'] = listCoin[0]['name']
                 self.coin_buy(coin_info)
 
     async def InitRoutine(self):

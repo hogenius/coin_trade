@@ -3,12 +3,11 @@ import pyupbit
 from config import ConfigInfo
 from statistics import stdev
 from msg_telegram import Messaging
-from dock import DockInfo, DockManager, CoinInfo
+from event import EventManager
 
-class CheckTicker(DockInfo):
+class CheckTicker:
     
     def __init__(self, name, isTest):
-        super().__init__(name)
         self.OUTLIER_COUNT = 3
         self.is_test = isTest
         self.config = ConfigInfo.Instance()
@@ -108,11 +107,33 @@ class CheckTicker(DockInfo):
         
         if(0 < len(self.list_spike) ):
             self.print_msg(f"spike coin find!! : {self.list_spike}")
+            EventManager.Instance().Event("BUY_COIN_LIST", self.list_spike)
         else:
             if self.is_test:
                 self.print_msg(f"no spike coin..")
-                dock = DockManager.Instance().GetDock("TRADER")
-                if isinstance(dock, CoinInfo):
-                    dock.BuyCoin("ho_coin");
+
+                list_test = []
+                list_test.append({
+                'name':"hogenus3", 
+                'stdev_volume_before':5,
+                'stdev_volume':34
+                })
+                list_test.append({
+                'name':"hogenus2", 
+                'stdev_volume_before':62,
+                'stdev_volume':6
+                })
+                list_test.append({
+                'name':"hogenus1", 
+                'stdev_volume_before':999,
+                'stdev_volume':888
+                })
+                list_test.append({
+                'name':"hogenus67", 
+                'stdev_volume_before':136,
+                'stdev_volume':99
+                })
+
+                EventManager.Instance().Event("BUY_COIN_LIST", list_test)
 
             
