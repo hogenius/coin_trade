@@ -12,7 +12,7 @@ case "$1" in
 		else
 			echo -n "Starting $APP_NAME Agent :"
 			echo
-      nohup python3 -u "APP_NAME".py > "APP_NAME".log &
+      nohup python3 -u "$APP_NAME".py > "$APP_NAME".log &
 			echo $! > $APP_PID_FILE
 			echo
 		fi
