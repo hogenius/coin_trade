@@ -1,36 +1,44 @@
-#!/bin/bash
+#!/bin/sh
 
-# 스크립트 이름
+APP_NAME=trade
+APP_PID_FILE=$APP_NAME.pid
 
-SCRIPT_NAME="run.sh"
+case "$1" in
 
-# 프로그램 실행 함수
+	start)
+		if test -s "$APP_PID"
+		then
+			echo "Already $APP_PID_FILE Running !" 
+		else
+			echo -n "Starting $APP_NAME Agent :"
+			echo
+      nohup python3 -u "$1".py > "$1".log &
+			echo $! > $APP_PID_FILE
+			echo
+		fi
+		;;
+	
+	stop)
+		if test -s "$APP_PID_FILE"
+		then
+			APP_PID=`cat $APP_PID_FILE`
+			echo "Killing $APP_NAME Agent : "
+			echo
+			kill -9 $APP_PID
+			rm -f $APP_PID_FILE
+		else
+			echo "No pid file found !" 
+		fi
+		echo
+	;;
 
-function start_program() {
-  echo "프로그램 시작..."
-  nohup python3 -u "$1".py > "$1".log &
-  echo "프로그램 PID: $!"
-}
+	restart)
+		$0 stop
+		$0 start
+	;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
 
-# 프로그램 종료 함수
-
-function stop_program() {
-  echo "프로그램 종료..."
-  pid=$(ps aux | grep "$1" | awk '{print $2}')
-  if [ -n "$pid" ]; then
-    echo "프로그램 종료 완료. $pid "
-    kill -9 $pid
-  else
-    echo "프로그램 실행 중이 아닙니다."
-  fi
-}
-
-# 매개변수 처리
-
-if [ "$1" == "start" ]; then
-  start_program "$2"
-elif [ "$1" == "stop" ]; then
-  stop_program "$2"
-else
-  echo "사용법: $SCRIPT_NAME start|stop 실행_파일_명"
-fi
+exit 0
