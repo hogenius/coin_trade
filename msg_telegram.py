@@ -8,6 +8,7 @@ import datetime
 from queue import Queue
 from config import ConfigInfo
 from singletone import SingletonInstane
+from event import EventManager
 
 class Messaging(SingletonInstane):
 
@@ -37,13 +38,20 @@ class Messaging(SingletonInstane):
     def InitHandler(self):
         print(f"InitHandler!!!")
         self.app = Application.builder().token(ConfigInfo.Instance().telegram_token).build()
-        self.app.add_handler(CommandHandler("help", self.help_handler))
+        self.app.add_handler(CommandHandler("help", self.handler_help))
+        self.app.add_handler(CommandHandler("refresh", self.handler_refresh))
         self.app.run_polling()
 
-    async def help_handler(self, update, context):
+    async def handler_help(self, update, context):
         await asyncio.sleep(0);
-        print(f"help_handler!!!")
+        print(f"handler_help!!!")
         self.Send("good day! what kind do you want?")
+
+    async def handler_refresh(self, update, context):
+        await asyncio.sleep(0);
+        print(f"handler_refresh!!!")
+        self.Send("refresh coin list start")
+        EventManager.Instance().Event("REFRESH_COIN_LIST", "")
 
 '''
 async def help_handler(update, context):

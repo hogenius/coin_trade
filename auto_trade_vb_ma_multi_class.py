@@ -24,6 +24,10 @@ class CoinTrade:
         self.list_coin_info = []
         self.config = ConfigInfo.Instance()
         EventManager.Instance().Regist("BUY_COIN_LIST", self.BuyCoinList)
+        EventManager.Instance().Regist("REFRESH_COIN_LIST", self.RefreshCoinList)
+
+    def RefreshCoinList(self, data):
+        self.make_coin_list()
 
     def BuyCoinList(self, listCoin):
 
