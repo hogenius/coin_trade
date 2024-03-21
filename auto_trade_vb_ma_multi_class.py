@@ -297,7 +297,7 @@ class CoinTrade:
 
                         #이동평균선 정배열이면서 best_k에 의해 변동성이 돌파했다면?! 매수 가즈아
                         if is_regulat_arr and is_over_target_price:
-                            print(f"is_regulat_arr && target_price:{target_price} < current_price:{current_price}")
+                            #print(f"is_regulat_arr && target_price:{target_price} < current_price:{current_price}")
                             self.coin_buy(self.list_coin_info[i])
 
             #초기화 구문.
