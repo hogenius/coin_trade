@@ -290,12 +290,13 @@ class CoinTrade:
 
                         target_price = self.get_target_price(coin_name, self.list_coin_info[i]['best_k'])
                         current_price = self.get_current_price(coin_name)
+                        is_over_target_price = target_price < current_price
 
-                        print(f"{coin_name} - case1: {self.config.ma_2}ma:{data_ma_2} < {self.config.ma_1}ma:{data_ma_1}")
-                        print(f"{coin_name} - case2: {target_price} < {current_price}")
+                        print(f"{coin_name} - case1: {self.config.ma_2}ma:{data_ma_2} < {self.config.ma_1}ma:{data_ma_1} = {is_regulat_arr}")
+                        print(f"{coin_name} - case2: target:{target_price} < current:{current_price} = {is_over_target_price}")
 
                         #이동평균선 정배열이면서 best_k에 의해 변동성이 돌파했다면?! 매수 가즈아
-                        if is_regulat_arr and target_price < current_price:
+                        if is_regulat_arr and is_over_target_price:
                             print(f"is_regulat_arr && target_price:{target_price} < current_price:{current_price}")
                             self.coin_buy(self.list_coin_info[i])
 
