@@ -282,7 +282,6 @@ class CoinTrade:
                         #data_ma_3 = last_data['MA_3']
 
                         #print(f"{config.ma_1}ma:{data_ma_1}, {config.ma_2}ma:{data_ma_2}, {config.ma_3}ma:{data_ma_3}")
-                        print(f"{self.config.ma_1}ma:{data_ma_1}, {self.config.ma_2}ma:{data_ma_2}")
                         #is_regulat_arr = (data_ma_3 < data_ma_2 < data_ma_1)
 
                         #1번 이동평균이 2번 이동평균선보다 이상이면 정배열로 간주한다.
@@ -291,6 +290,9 @@ class CoinTrade:
 
                         target_price = self.get_target_price(coin_name, self.list_coin_info[i]['best_k'])
                         current_price = self.get_current_price(coin_name)
+
+                        print(f"{coin_name} - case1: {self.config.ma_2}ma:{data_ma_2} < {self.config.ma_1}ma:{data_ma_1}")
+                        print(f"{coin_name} - case2: {target_price} < {current_price}")
 
                         #이동평균선 정배열이면서 best_k에 의해 변동성이 돌파했다면?! 매수 가즈아
                         if is_regulat_arr and target_price < current_price:
