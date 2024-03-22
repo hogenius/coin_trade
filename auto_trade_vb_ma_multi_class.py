@@ -12,6 +12,7 @@ import pyupbit
 import datetime
 import find_best_k
 import pandas
+import json
 from msg_telegram import Messaging
 from config import ConfigInfo
 from event import EventManager
@@ -100,8 +101,16 @@ class CoinTrade:
 
         return revenue_rate
 
-    def print_msg(self, msg, withNotification=True):
+    def print_msg(self, data, withNotification=True):
+
+        msg = ""
+        if type(data) is not str:            
+            msg = json.dumps(data, indent=4)
+        else:
+            msg = data
+
         print(msg)
+
         if withNotification:
             Messaging.Instance().Send(msg)
 
@@ -121,7 +130,8 @@ class CoinTrade:
                 'is_sell':False, 
                 'krw_avaiable':-1})
         self.check_available_krw(list)
-        self.print_msg(f"make_coin_list : {list}")
+        self.print_msg("make_coin_list")
+        self.print_msg(list)
 
 
     def check_available_krw(self, list):
@@ -170,7 +180,8 @@ class CoinTrade:
             list[i]['krw_avaiable'] = krw_change
             
         if is_need_noti:
-            self.print_msg(f"available_krw change : {list_rate}")
+            self.print_msg("available_krw change")
+            self.print_msg(list_rate)
 
     def coin_buy(self, coinInfo):
         
@@ -302,7 +313,7 @@ class CoinTrade:
 
             #초기화 구문.
             if is_need_refesh:    
-                self.print_msg(f"autotrade refresh")
+                self.print_msg("autotrade refresh")
                 self.make_coin_list(self.list_coin_info)
 
             #test = 1
