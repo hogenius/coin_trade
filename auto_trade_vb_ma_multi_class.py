@@ -26,6 +26,11 @@ class CoinTrade:
         self.config = ConfigInfo.Instance()
         EventManager.Instance().Regist("BUY_COIN_LIST", self.BuyCoinList)
         EventManager.Instance().Regist("REFRESH_COIN_LIST", self.RefreshCoinList)
+        EventManager.Instance().Regist("CHECK_COIN_LIST", self.CheckCoinList)
+
+
+    def CheckCoinList(self, data):
+        self.coin_process(True)
 
     def RefreshCoinList(self, data):
         self.make_coin_list(self.list_coin_info)
@@ -55,7 +60,7 @@ class CoinTrade:
         #self.print_msg(f"auto trade start")
         self.make_coin_list(self.list_coin_info)
         while True:
-            self.coin_process()
+            self.coin_process(False)
             await asyncio.sleep(ConfigInfo.Instance().loop_sec)
 
     def get_target_price(self, ticker, k):
@@ -134,7 +139,7 @@ class CoinTrade:
         self.print_msg(list)
 
 
-    def check_available_krw(self, list):
+    def check_available_krw(self, list, isForce=False):
         #보유하고 있는 현금을 기준으로 비율을 정산합니다.
 
         #krw_total = get_balance("KRW")
@@ -155,7 +160,8 @@ class CoinTrade:
         is_need_noti = False
         list_rate = []
 
-        print(f"check_available_krw krw_total: {krw_total}")
+
+        self.print_msg(f"check_available_krw krw_total: {krw_total}", isForce)
         rate_total = 0
         for i in range(len(list)):    
             if list[i]['is_buy'] == True:
@@ -223,11 +229,11 @@ class CoinTrade:
         return result
        
 
-    def coin_process(self):
+    def coin_process(self, isForce):
 
         # 자동매매 시작
         try:
-            self.check_available_krw(self.list_coin_info)
+            self.check_available_krw(self.list_coin_info, isForce)
 
             is_need_refesh = False
             balances = self.upbit.get_balances()
@@ -303,8 +309,8 @@ class CoinTrade:
                         current_price = self.get_current_price(coin_name)
                         is_over_target_price = target_price < current_price
 
-                        print(f"{coin_name} - case1: {self.config.ma_2}ma:{data_ma_2} < {self.config.ma_1}ma:{data_ma_1} = {is_regulat_arr}")
-                        print(f"{coin_name} - case2: target:{target_price} < current:{current_price} = {is_over_target_price}")
+                        self.print_msg(f"{coin_name} - case1: {self.config.ma_2}ma:{data_ma_2} < {self.config.ma_1}ma:{data_ma_1} = {is_regulat_arr}", isForce)
+                        self.print_msg(f"{coin_name} - case2: target:{target_price} < current:{current_price} = {is_over_target_price}", isForce)
 
                         #이동평균선 정배열이면서 best_k에 의해 변동성이 돌파했다면?! 매수 가즈아
                         if is_regulat_arr and is_over_target_price:
