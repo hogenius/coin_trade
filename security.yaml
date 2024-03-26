@@ -1,0 +1,5 @@
+key_access: "INPUT_ACCESS_KEY_HERE"
+key_secret: "INPUT_SECRET_KEY_HERE"
+discord_hook: "DISCORD_HOOK_URL_HERE"
+telegram_token: "TELEGRAM_TOKEN_HERE"
+telegram_chat_id: "TELEGRAM_CHAT_ID_HERE"
