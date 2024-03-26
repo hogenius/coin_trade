@@ -21,6 +21,3 @@ class ConfigInfo(SingletonInstane):
             self.discord_hook = security_data['discord_hook']
             self.telegram_token = security_data['telegram_token']
             self.telegram_chat_id = security_data['telegram_chat_id']
-
-        print(f"self.coin_name : {self.coin_name}")
-        print(f"self.access : {self.access}")
