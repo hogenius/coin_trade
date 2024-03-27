@@ -156,6 +156,7 @@ class CoinTrade:
             for i in range(len(list)):    
                 if b['currency'] == list[i]['name'].replace('KRW-', '') and (b['balance'] is not None) and 0.01 < float(b['balance']) :
                     list[i]['is_buy'] = True
+                    list[i]['buy_price'] = float(b['balance']) * float(b['avg_buy_price'])
 
         is_need_noti = False
         list_rate = []
@@ -207,7 +208,9 @@ class CoinTrade:
 
             #매수한것으로 표기. 하루에 반복적으로 구매 하지 않습니다.
             #하루가 지나서 전량 매도가 되기전에 사용자 임의로 매도를 할수 있도록 말이죠.
+
             coinInfo['is_buy'] = True
+            coinInfo['buy_price'] = buy_krw
 
             #print(f"after buy list_coin_info : {list_coin_info}")
         else:
@@ -223,8 +226,15 @@ class CoinTrade:
             if self.is_test == False:
                 self.upbit.sell_market_order(coinInfo['name'], sell_coin)
             result = True
-            self.print_msg(f"autotrade sell_market_order {coinInfo['name']}:{sell_coin}")
+            sell_krw = self.get_current_price(coinInfo['name']) * sell_coin
+            if "buy_price" in coinInfo:
+                margin_krw = sell_krw - coinInfo['buy_price']
+                del coinInfo['buy_price']
+                self.print_msg(f"autotrade sell_market_order\n{coinInfo['name']}:{sell_coin}\nsell_krw:{sell_krw}\nmargin_krw:{margin_krw}")
+            else:
+                self.print_msg(f"autotrade sell_market_order\n{coinInfo['name']}:{sell_coin}\nsell_krw:{sell_krw}\nmargin_krw:unknown")
             coinInfo['is_sell'] = True
+            coinInfo['sell_price'] = sell_krw
         
         return result
        
