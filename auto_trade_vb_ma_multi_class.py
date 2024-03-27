@@ -170,6 +170,10 @@ class CoinTrade:
             rate_total += list[i]['rate']
 
         for i in range(len(list)):    
+
+            if list[i]['rate'] <= 0:
+                continue
+
             if list[i]['is_buy'] == True:
                 if 0 < list[i]['krw_avaiable']:
                     list_rate.append({'name':list[i]['name'], 'krw_before':list[i]['krw_avaiable'], 'krw_after':0})

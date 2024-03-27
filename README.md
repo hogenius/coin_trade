@@ -16,4 +16,4 @@
     https://github.com/kernc/backtesting.py/issues/803
 
 ### start
-- nohup python3 -u auto_trade.py > output.log &
+- nohup python3 -u auto_trade.py >> output.log &
