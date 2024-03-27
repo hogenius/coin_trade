@@ -208,7 +208,7 @@ class CoinTrade:
             if self.is_test == False:
                 self.upbit.buy_market_order(coinInfo['name'], buy_krw)
 
-            self.print_msg(f"autotrade buy_market_order {coinInfo['name']}:{buy_krw}")
+            self.print_msg(f"autotrade buy_market_order {coinInfo['name']}:{buy_krw:,.2f}")
 
             #매수한것으로 표기. 하루에 반복적으로 구매 하지 않습니다.
             #하루가 지나서 전량 매도가 되기전에 사용자 임의로 매도를 할수 있도록 말이죠.
@@ -218,7 +218,7 @@ class CoinTrade:
 
             #print(f"after buy list_coin_info : {list_coin_info}")
         else:
-            self.print_msg(f"autotrade not enough money to buy_market_order {coinInfo['name']}. krw:{krw}")
+            self.print_msg(f"autotrade not enough money to buy_market_order {coinInfo['name']}. krw:{krw:,.2f}")
 
     def coin_sell(self, coinInfo):
         
@@ -234,9 +234,9 @@ class CoinTrade:
             if "buy_price" in coinInfo:
                 margin_krw = sell_krw - coinInfo['buy_price']
                 del coinInfo['buy_price']
-                self.print_msg(f"autotrade sell_market_order\n{coinInfo['name']}:{sell_coin}\nsell_krw:{sell_krw}\nmargin_krw:{margin_krw}")
+                self.print_msg(f"autotrade sell_market_order\n{coinInfo['name']}:{sell_coin}\nsell_krw:{sell_krw:,.2f}\nmargin_krw:{margin_krw:,.2f}")
             else:
-                self.print_msg(f"autotrade sell_market_order\n{coinInfo['name']}:{sell_coin}\nsell_krw:{sell_krw}\nmargin_krw:unknown")
+                self.print_msg(f"autotrade sell_market_order\n{coinInfo['name']}:{sell_coin}\nsell_krw:{sell_krw:,.2f}\nmargin_krw:unknown")
             coinInfo['is_sell'] = True
             coinInfo['sell_price'] = sell_krw
         
@@ -324,7 +324,7 @@ class CoinTrade:
                         is_over_target_price = target_price < current_price
 
                         self.print_msg(f"{coin_name} - case1: {self.config.ma_2}ma:{data_ma_2} < {self.config.ma_1}ma:{data_ma_1} = {is_regulat_arr}", isForce)
-                        self.print_msg(f"{coin_name} - case2: target:{target_price} < current:{current_price} = {is_over_target_price}", isForce)
+                        self.print_msg(f"{coin_name} - case2: target:{target_price:,.2f} < current:{current_price:,.2f} = {is_over_target_price}", isForce)
 
                         #이동평균선 정배열이면서 best_k에 의해 변동성이 돌파했다면?! 매수 가즈아
                         if is_regulat_arr and is_over_target_price:
