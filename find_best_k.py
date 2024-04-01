@@ -39,7 +39,8 @@ def get_ror_by_df(df, k=0.5):
     df['range'] = (df['high'] - df['low']) * k
     df['target'] = df['open'] + df['range'].shift(1)
 
-    fee = df['target'] * 0.005
+    #수수료
+    fee = df['target'] * 0.0005
     df['ror'] = np.where(df['high'] > df['target'],
                          df['close'] / df['target'] - fee,
                          1)
