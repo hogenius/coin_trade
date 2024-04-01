@@ -21,7 +21,7 @@ def GetCeil(k, number_decimal_place):
 def GetBestK(coin_nam="KRW-BTC"):
     best_k = 0.1
     result = 0.0
-    df = pyupbit.get_ohlcv(coin_nam,count=30)
+    df = pyupbit.get_ohlcv(coin_nam,count=50)
     try:
         for k in np.arange(0.2, 0.8, 0.1):
             ror = get_ror_by_df(df, k)
@@ -39,14 +39,20 @@ def get_ror_by_df(df, k=0.5):
     df['range'] = (df['high'] - df['low']) * k
     df['target'] = df['open'] + df['range'].shift(1)
 
-    fee = 0.0
+    fee = df['target'] * 0.005
     df['ror'] = np.where(df['high'] > df['target'],
                          df['close'] / df['target'] - fee,
                          1)
 
     ror = df['ror'].cumprod()[-2]
     #print("%.1f %f" % (k, ror))
+    #print(f"{df}")
     return ror
 
-#data = GetBestK()
-#print(f"GetBestK {data}")
+if __name__ == '__main__':
+    bestk1 = GetBestK("KRW-BTC")
+    print(f"BTC : {bestk1}")
+    bestk2 = GetBestK("KRW-ETH")
+    print(f"ETH : {bestk2}")
+    bestk3 = GetBestK("KRW-SOL")
+    print(f"SOL : {bestk3}")
