@@ -317,22 +317,29 @@ class CoinTrade:
 
                         rate_profit = self.list_coin_info[i]['rate_profit']
                         rate_stop_loss = self.list_coin_info[i]['rate_stop_loss']
-                        if 0 < rate_profit or rate_stop_loss < 0:
+                        is_check_profit = 0 < rate_profit
+                        is_check_stop_loss = rate_stop_loss < 0
+                        if is_check_profit or is_check_stop_loss:
 
                             #매수한 상태이니 이제 수익률을 계산합니다.
                             revenue_rate = self.get_revenue_rate(balances, self.list_coin_info[i]['name'])
 
-                            is_need_sell = False
-                            if 0 < rate_profit and rate_profit <= revenue_rate:
-                                #익절하자!!
-                                is_need_sell = True
-                            elif rate_stop_loss < 0 and revenue_rate <= rate_stop_loss:
-                                #손절하자!!
-                                is_need_sell = True
+                            is_profit_sell = is_check_profit and rate_profit <= revenue_rate
+                            is_loss_sell = is_check_stop_loss and revenue_rate <= rate_stop_loss
 
-                            if is_need_sell:
+                            if is_check_profit:
+                                #익절
+                                self.print_msg(f"{coin_name} - check sell: rate_profit({rate_profit}) <= revenue_rate({revenue_rate}) = {is_profit_sell}", isForce)
+
+                            if is_check_stop_loss:
+                                #손절
+                                self.print_msg(f"{coin_name} - check sell: revenue_rate({revenue_rate}) <= rate_stop_loss({rate_stop_loss}) = {is_loss_sell}", isForce)
+
+                            if is_profit_sell or is_loss_sell:
                                 #전량 매도.
                                 self.coin_sell(self.list_coin_info[i])
+                        else:
+                            self.print_msg(f"{coin_name} - check sell: do nothing..", isForce)
 
                     else:
                         
