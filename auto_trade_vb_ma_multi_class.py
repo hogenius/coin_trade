@@ -27,7 +27,11 @@ class CoinTrade:
         EventManager.Instance().Regist("BUY_COIN_LIST", self.BuyCoinList)
         EventManager.Instance().Regist("REFRESH_COIN_LIST", self.RefreshCoinList)
         EventManager.Instance().Regist("CHECK_COIN_LIST", self.CheckCoinList)
+        EventManager.Instance().Regist("RELOAD_CONFIG", self.ReloadConfing)
 
+
+    def ReloadConfing(self, data):
+        self.config.ReloadAll()
 
     def CheckCoinList(self, data):
         self.coin_process(True)

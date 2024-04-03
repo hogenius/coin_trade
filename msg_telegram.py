@@ -41,6 +41,8 @@ class Messaging(SingletonInstane):
         self.app.add_handler(CommandHandler("help", self.handler_help))
         self.app.add_handler(CommandHandler("refresh", self.handler_refresh))
         self.app.add_handler(CommandHandler("check", self.handler_check))
+        self.app.add_handler(CommandHandler("reload_config", self.handler_reload_config))
+        
         self.app.run_polling()
 
     async def handler_help(self, update, context):
@@ -59,6 +61,13 @@ class Messaging(SingletonInstane):
         print(f"handler_check!!!")
         self.Send("check coin list start")
         EventManager.Instance().Event("CHECK_COIN_LIST", "")
+
+    async def handler_reload_config(self, update, context):
+        await asyncio.sleep(0);
+        print(f"handler_reload_config!!!")
+        self.Send("reload config start")
+        EventManager.Instance().Event("RELOAD_CONFIG", "")
+
 
 '''
 async def help_handler(update, context):
