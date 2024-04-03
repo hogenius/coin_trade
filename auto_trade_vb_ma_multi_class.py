@@ -133,7 +133,9 @@ class CoinTrade:
                 'best_k':find_best_k.GetBestK(data['name']),
                 'is_buy':False, 
                 'is_sell':False, 
-                'krw_avaiable':-1})
+                'krw_avaiable':-1,
+                'check':data['check']
+                })
         self.check_available_krw(list)
         self.print_msg("make_coin_list")
         self.print_msg(list)
@@ -242,7 +244,8 @@ class CoinTrade:
         
         return result
        
-    def check_ma(self, coin_name, isForce):
+    #이동평균선을 구한다.
+    def check_ma(self, coin_name, value, isForce):
 
         df = pyupbit.get_ohlcv(coin_name, count=self.config.ma_3)
         df['MA_1'] = df['close'].rolling(self.config.ma_1).mean()
@@ -260,16 +263,17 @@ class CoinTrade:
 
         #1번 이동평균이 2번 이동평균선보다 이상이면 정배열로 간주한다.
         is_regulat_arr = (data_ma_2 < data_ma_1)
-        self.print_msg(f"{coin_name} - case1: {self.config.ma_2}ma:{data_ma_2} < {self.config.ma_1}ma:{data_ma_1} = {is_regulat_arr}", isForce)
+        self.print_msg(f"{coin_name} - check_ma: {self.config.ma_2}ma:{data_ma_2} < {self.config.ma_1}ma:{data_ma_1} = {is_regulat_arr}", isForce)
 
         return is_regulat_arr
 
+     #변동성 돌파를 구한다.
     def check_vb(self, coin_name, bestK, isForce):
         target_price = self.get_target_price(coin_name, bestK)
         current_price = self.get_current_price(coin_name)
 
         is_over_target_price = target_price < current_price
-        self.print_msg(f"{coin_name} - case2: target:{target_price:,.2f} < current:{current_price:,.2f} = {is_over_target_price}", isForce)
+        self.print_msg(f"{coin_name} - check_vb: target:{target_price:,.2f} < current:{current_price:,.2f} = {is_over_target_price}", isForce)
 
         return is_over_target_price
 
@@ -292,6 +296,7 @@ class CoinTrade:
             for i in range(len(self.list_coin_info)):
 
                 coin_name = self.list_coin_info[i]['name']
+                best_k = self.list_coin_info[i]['best_k']
 
                 #KST 06:57 ~ 07:00동안은 매도프로세스를 진행합니다.
                 if start_time < now < end_time:
@@ -330,13 +335,24 @@ class CoinTrade:
                                 self.coin_sell(self.list_coin_info[i])
 
                     else:
-                        #이동평균선을 구한다.
-                        is_regulat_arr = self.check_ma(coin_name, isForce)
-                        #변동성 돌파를 구한다.
-                        is_over_target_price = self.check_vb(coin_name, self.list_coin_info[i]['best_k'], isForce)
+                        
+                        check_count = 0
+                        list_check = self.list_coin_info[i]['check']
+                        for j in range(len(list_check)):
+                            check_name = list_check[j]
+                            if hasattr(self, check_name):
+                                method = getattr(self, check_name)
+                                if method(coin_name, best_k, isForce) == True:
+                                    check_count+=1
+
+                        # #이동평균선을 구한다.
+                        # is_regulat_arr = self.check_ma(coin_name, isForce)
+                        # #변동성 돌파를 구한다.
+                        # is_over_target_price = self.check_vb(coin_name, self.list_coin_info[i]['best_k'], isForce)
                         
                         #이동평균선 정배열이면서 best_k에 의해 변동성이 돌파했다면?! 매수 가즈아
-                        if is_regulat_arr and is_over_target_price:
+                        #if is_regulat_arr and is_over_target_price:
+                        if len(list_check) <= check_count:
                             #print(f"is_regulat_arr && target_price:{target_price} < current_price:{current_price}")
                             self.coin_buy(self.list_coin_info[i])
 

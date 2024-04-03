@@ -10,11 +10,20 @@ list_coin:
   rate: 7000
   rate_profit: 0.0
   rate_stop_loss: 0.0
+  check:
+  - "check_ma"
+  - "check_vb"
 - name: "KRW-ETH"
   rate: 2000
   rate_profit: 0.0
   rate_stop_loss: 0.0
+  check:
+  - "check_ma"
+  - "check_vb"
 - name: "KRW-SOL"
   rate: 1000
   rate_profit: 0.0
   rate_stop_loss: 0.0
+  check:
+  - "check_ma"
+  - "check_vb"
