@@ -160,7 +160,7 @@ class CoinTrade:
                 continue
 
             for i in range(len(list)):    
-                if b['currency'] == list[i]['name'].replace('KRW-', '') and (b['balance'] is not None) and 0.01 < float(b['balance']) :
+                if b['currency'] == list[i]['name'].replace('KRW-', '') and (b['balance'] is not None) and 0.02 < float(b['balance']) :
                     list[i]['is_buy'] = True
                     list[i]['buy_price'] = float(b['balance']) * float(b['avg_buy_price'])
 
