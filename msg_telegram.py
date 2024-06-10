@@ -42,8 +42,8 @@ class Messaging(SingletonInstane):
         self.app.add_handler(CommandHandler("refresh", self.handler_refresh))
         self.app.add_handler(CommandHandler("check", self.handler_check))
         self.app.add_handler(CommandHandler("reload_config", self.handler_reload_config))
-        self.app.add_handler(CommandHandler("safemode", self.handler_reload_config))
-        self.app.add_handler(CommandHandler("normalmode", self.handler_reload_config))
+        self.app.add_handler(CommandHandler("safemode", self.handler_safe_mode))
+        self.app.add_handler(CommandHandler("normalmode", self.handler_normal_mode))
         
         self.app.run_polling()
 
