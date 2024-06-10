@@ -35,13 +35,13 @@ class CoinTrade:
         for i in range(len(self.list_coin_info)):
             self.list_coin_info[i]['rate_profit'] = 1.0
         self.print_msg("set safe mode coin list")
-        self.print_msg(list)
+        self.print_msg(self.list_coin_info)
 
     def SetNormalMode(self, data):
         for i in range(len(self.list_coin_info)):
             self.list_coin_info[i]['rate_profit'] = 0.0
         self.print_msg("set normal mode coin list")
-        self.print_msg(list)
+        self.print_msg(self.list_coin_info)
 
     def ReloadConfing(self, data):
         self.config.ReloadAll()
