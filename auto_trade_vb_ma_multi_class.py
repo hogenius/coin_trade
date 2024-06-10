@@ -28,7 +28,20 @@ class CoinTrade:
         EventManager.Instance().Regist("REFRESH_COIN_LIST", self.RefreshCoinList)
         EventManager.Instance().Regist("CHECK_COIN_LIST", self.CheckCoinList)
         EventManager.Instance().Regist("RELOAD_CONFIG", self.ReloadConfing)
+        EventManager.Instance().Regist("SAFE_MODE", self.SetSafeMode)
+        EventManager.Instance().Regist("NORMAL_MODE", self.SetNormalMode)
 
+    def SetSafeMode(self, data):
+        for i in range(len(self.list_coin_info)):
+            self.list_coin_info[i]['rate_profit'] = 1.0
+        self.print_msg("set safe mode coin list")
+        self.print_msg(list)
+
+    def SetNormalMode(self, data):
+        for i in range(len(self.list_coin_info)):
+            self.list_coin_info[i]['rate_profit'] = 0.0
+        self.print_msg("set normal mode coin list")
+        self.print_msg(list)
 
     def ReloadConfing(self, data):
         self.config.ReloadAll()

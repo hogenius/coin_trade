@@ -42,6 +42,8 @@ class Messaging(SingletonInstane):
         self.app.add_handler(CommandHandler("refresh", self.handler_refresh))
         self.app.add_handler(CommandHandler("check", self.handler_check))
         self.app.add_handler(CommandHandler("reload_config", self.handler_reload_config))
+        self.app.add_handler(CommandHandler("safemode", self.handler_reload_config))
+        self.app.add_handler(CommandHandler("normalmode", self.handler_reload_config))
         
         self.app.run_polling()
 
@@ -67,6 +69,18 @@ class Messaging(SingletonInstane):
         print(f"handler_reload_config!!!")
         self.Send("reload config start")
         EventManager.Instance().Event("RELOAD_CONFIG", "")
+
+    async def handler_safe_mode(self, update, context):
+        await asyncio.sleep(0);
+        print(f"handler_safe_mode!!!")
+        self.Send("safe mode start")
+        EventManager.Instance().Event("SAFE_MODE", "")
+
+    async def handler_normal_mode(self, update, context):
+        await asyncio.sleep(0);
+        print(f"handler_normal_mode!!!")
+        self.Send("normal mode start")
+        EventManager.Instance().Event("NORMAL_MODE", "")
 
 
 '''
