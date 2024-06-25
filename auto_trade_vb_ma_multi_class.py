@@ -151,7 +151,8 @@ class CoinTrade:
                 'is_buy':False, 
                 'is_sell':False, 
                 'krw_avaiable':-1,
-                'check':data['check']
+                'check':data['check'],
+                'check_count':data['check_count']
                 })
         self.check_available_krw(list)
         self.print_msg("make_coin_list")
@@ -360,14 +361,14 @@ class CoinTrade:
 
                     else:
                         
-                        check_count = 0
+                        check_complete_count = 0
                         list_check = self.list_coin_info[i]['check']
                         for j in range(len(list_check)):
                             check_name = list_check[j]
                             if hasattr(self, check_name):
                                 method = getattr(self, check_name)
                                 if method(coin_name, best_k, isForce) == True:
-                                    check_count+=1
+                                    check_complete_count+=1
 
                         # #이동평균선을 구한다.
                         # is_regulat_arr = self.check_ma(coin_name, isForce)
@@ -376,9 +377,15 @@ class CoinTrade:
                         
                         #이동평균선 정배열이면서 best_k에 의해 변동성이 돌파했다면?! 매수 가즈아
                         #if is_regulat_arr and is_over_target_price:
-                        if len(list_check) <= check_count:
-                            #print(f"is_regulat_arr && target_price:{target_price} < current_price:{current_price}")
-                            self.coin_buy(self.list_coin_info[i])
+                        if len(list_check) <= check_complete_count:
+
+                            if self.list_coin_info[i]['check_count'] <= 0:
+                                #매수합니다.
+                                #print(f"is_regulat_arr && target_price:{target_price} < current_price:{current_price}")
+                                self.coin_buy(self.list_coin_info[i])
+                            else:
+                                #체크완료 카운트를 하나 뺍니다.
+                                self.list_coin_info[i]['check_count'] -= 1
 
             #초기화 구문.
             if is_need_refesh:    
