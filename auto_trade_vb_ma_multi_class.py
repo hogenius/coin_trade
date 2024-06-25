@@ -152,7 +152,7 @@ class CoinTrade:
                 'is_sell':False, 
                 'krw_avaiable':-1,
                 'check':data['check'],
-                'check_count':data['check_count']
+                'check_count':data['check_count'],
                 'check_count_origin':data['check_count']
                 })
         self.check_available_krw(list)
