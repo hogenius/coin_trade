@@ -34,12 +34,14 @@ class CoinTrade:
     def SetSafeMode(self, data):
         for i in range(len(self.list_coin_info)):
             self.list_coin_info[i]['rate_profit'] = 1.0
+            self.list_coin_info[i]['check_count'] = self.list_coin_info[i]['check_count'] * 2
         self.print_msg("set safe mode coin list")
         self.print_msg(self.list_coin_info)
 
     def SetNormalMode(self, data):
         for i in range(len(self.list_coin_info)):
             self.list_coin_info[i]['rate_profit'] = 0.0
+            self.list_coin_info[i]['check_count'] = self.list_coin_info[i]['check_count_origin']
         self.print_msg("set normal mode coin list")
         self.print_msg(self.list_coin_info)
 
@@ -379,14 +381,14 @@ class CoinTrade:
                         #이동평균선 정배열이면서 best_k에 의해 변동성이 돌파했다면?! 매수 가즈아
                         #if is_regulat_arr and is_over_target_price:
                         if len(list_check) <= check_complete_count:
-
-                            if self.list_coin_info[i]['check_count'] <= 0:
+                            check_count = self.list_coin_info[i]['check_count']
+                            if check_count <= 0:
                                 #매수합니다.
                                 #print(f"is_regulat_arr && target_price:{target_price} < current_price:{current_price}")
                                 self.coin_buy(self.list_coin_info[i])
                             else:
                                 #체크완료 카운트를 하나 뺍니다.
-                                self.list_coin_info[i]['check_count'] -= 1
+                                self.list_coin_info[i]['check_count'] = check_count - 1
 
                         else:
                             self.list_coin_info[i]['check_count'] = self.list_coin_info[i]['check_count_origin']
