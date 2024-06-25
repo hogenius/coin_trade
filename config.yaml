@@ -13,7 +13,7 @@ list_coin:
   check:
   - "check_ma"
   - "check_vb"
-  check_count: 10
+  check_count: 5
 - name: "KRW-ETH"
   rate: 2000
   rate_profit: 0.0
@@ -21,11 +21,12 @@ list_coin:
   check:
   - "check_ma"
   - "check_vb"
-  check_count: 10
+  check_count: 5
 - name: "KRW-SOL"
   rate: 1000
-  rate_profit: 2.0
+  rate_profit: 0.0
   rate_stop_loss: 0.0
   check:
+  - "check_ma"
   - "check_vb"
-  check_count: 10
+  check_count: 5

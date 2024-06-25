@@ -153,6 +153,7 @@ class CoinTrade:
                 'krw_avaiable':-1,
                 'check':data['check'],
                 'check_count':data['check_count']
+                'check_count_origin':data['check_count']
                 })
         self.check_available_krw(list)
         self.print_msg("make_coin_list")
@@ -386,6 +387,9 @@ class CoinTrade:
                             else:
                                 #체크완료 카운트를 하나 뺍니다.
                                 self.list_coin_info[i]['check_count'] -= 1
+
+                        else:
+                            self.list_coin_info[i]['check_count'] = self.list_coin_info[i]['check_count_origin']
 
             #초기화 구문.
             if is_need_refesh:    
