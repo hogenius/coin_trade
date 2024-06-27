@@ -388,10 +388,13 @@ class CoinTrade:
                                 self.coin_buy(self.list_coin_info[i])
                             else:
                                 #체크완료 카운트를 하나 뺍니다.
-                                self.list_coin_info[i]['check_count'] = check_count - 1
+                                set_check_count = check_count - 1
+                                self.list_coin_info[i]['check_count'] = set_check_count
+                                self.print_msg(f"autotrade check buy_market_order {self.list_coin_info[i]['name']}.  remain check count:{set_check_count}")
 
                         else:
                             self.list_coin_info[i]['check_count'] = self.list_coin_info[i]['check_count_origin']
+                            self.print_msg(f"autotrade check reset buy_market_order {self.list_coin_info[i]['name']}")
 
             #초기화 구문.
             if is_need_refesh:    
