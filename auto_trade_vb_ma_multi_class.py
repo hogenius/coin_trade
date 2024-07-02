@@ -34,7 +34,7 @@ class CoinTrade:
     def SetSafeMode(self, data):
         for i in range(len(self.list_coin_info)):
             self.list_coin_info[i]['rate_profit'] = 1.0
-            self.list_coin_info[i]['check_count'] = self.list_coin_info[i]['check_count'] * 2
+            self.list_coin_info[i]['check_count'] = self.list_coin_info[i]['check_count_origin'] * 2
         self.print_msg("set safe mode coin list")
         self.print_msg(self.list_coin_info)
 
@@ -382,7 +382,7 @@ class CoinTrade:
                         #if is_regulat_arr and is_over_target_price:
                         check_count = self.list_coin_info[i]['check_count']
                         if len(list_check) <= check_complete_count:
-                            
+
                             if check_count <= 0:
                                 #매수합니다.
                                 #print(f"is_regulat_arr && target_price:{target_price} < current_price:{current_price}")
