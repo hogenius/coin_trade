@@ -380,8 +380,9 @@ class CoinTrade:
                         
                         #이동평균선 정배열이면서 best_k에 의해 변동성이 돌파했다면?! 매수 가즈아
                         #if is_regulat_arr and is_over_target_price:
+                        check_count = self.list_coin_info[i]['check_count']
                         if len(list_check) <= check_complete_count:
-                            check_count = self.list_coin_info[i]['check_count']
+                            
                             if check_count <= 0:
                                 #매수합니다.
                                 #print(f"is_regulat_arr && target_price:{target_price} < current_price:{current_price}")
@@ -392,7 +393,7 @@ class CoinTrade:
                                 self.list_coin_info[i]['check_count'] = set_check_count
                                 self.print_msg(f"autotrade check buy_market_order {self.list_coin_info[i]['name']}.  remain check count:{set_check_count}")
 
-                        else:
+                        elif check_count != self.list_coin_info[i]['check_count_origin']:
                             self.list_coin_info[i]['check_count'] = self.list_coin_info[i]['check_count_origin']
                             self.print_msg(f"autotrade check reset buy_market_order {self.list_coin_info[i]['name']}")
 
