@@ -64,7 +64,7 @@ class CoinTrade:
         # 'stdev_volume':stdev_volume
         
         listCoin.sort(key=lambda x: x['stdev_volume'], reverse=True)
-        print(f"BuyCoinList BuyCoin : {listCoin}")
+        print(f"(TEST)BuyCoinList BuyCoin : {listCoin}")
         #아직은 작업중이니 이벤트가 들어와도 진행을 멈춥니다.
         return
         for i in range(len(self.list_coin_info)):

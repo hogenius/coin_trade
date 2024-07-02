@@ -18,7 +18,7 @@ if __name__ == '__main__':
     loop.create_task(Messaging.Instance().RoutineMsg())
     #loop.create_task(test_class(upbit, is_test).InitRoutine())
     loop.create_task(CoinTrade("TRADER", upbit, is_test).InitRoutine())
-    #loop.create_task(CheckTicker("CHECKER", is_test).InitRoutine())
+    loop.create_task(CheckTicker("CHECKER", is_test).InitRoutine())
     
     Messaging.Instance().InitHandler()
     loop.run_forever()
