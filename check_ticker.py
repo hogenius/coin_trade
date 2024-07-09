@@ -49,7 +49,7 @@ class CheckTicker:
 
     async def CheckTickerProcess(self, ticker, listTickerSpike, interval, checkCount):
 
-        print(f"CheckTicker:{ticker['market']}, interval:{interval}, checkCount:{checkCount}")
+        #print(f"CheckTicker:{ticker['market']}, interval:{interval}, checkCount:{checkCount}")
         listTickerSpike.clear()
         df = pyupbit.get_ohlcv(ticker['market'], interval=interval, count=checkCount)
         #print(df)
