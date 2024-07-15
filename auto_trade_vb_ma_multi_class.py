@@ -20,6 +20,7 @@ from event import EventManager
 class CoinTrade:
 
     def __init__(self, name, upbit, isTest):
+        self.is_pause = False
         self.is_test = isTest
         self.upbit = upbit
         self.list_coin_info = []
@@ -30,6 +31,16 @@ class CoinTrade:
         EventManager.Instance().Regist("RELOAD_CONFIG", self.ReloadConfing)
         EventManager.Instance().Regist("SAFE_MODE", self.SetSafeMode)
         EventManager.Instance().Regist("NORMAL_MODE", self.SetNormalMode)
+        EventManager.Instance().Regist("PAUSE", self.SetNormalMode)
+        EventManager.Instance().Regist("RESUME", self.SetNormalMode)
+
+    def SetResume(self, data):
+        self.is_pause = False
+        self.print_msg(f"set resume mode. self.is_pause : {self.is_pause}")
+
+    def SetPause(self, data):
+        self.is_pause = True
+        self.print_msg(f"set pause mode. self.is_pause : {self.is_pause}")
 
     def SetSafeMode(self, data):
         for i in range(len(self.list_coin_info)):
@@ -299,6 +310,9 @@ class CoinTrade:
         return is_over_target_price
 
     def coin_process(self, isForce):
+
+        if self.is_pause:
+            return
 
         # 자동매매 시작
         try:

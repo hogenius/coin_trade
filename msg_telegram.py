@@ -44,6 +44,8 @@ class Messaging(SingletonInstane):
         self.app.add_handler(CommandHandler("reload_config", self.handler_reload_config))
         self.app.add_handler(CommandHandler("safemode", self.handler_safe_mode))
         self.app.add_handler(CommandHandler("normalmode", self.handler_normal_mode))
+        self.app.add_handler(CommandHandler("pause", self.handler_pause))
+        self.app.add_handler(CommandHandler("resume", self.handler_resume))
         
         self.app.run_polling()
 
@@ -82,6 +84,17 @@ class Messaging(SingletonInstane):
         self.Send("normal mode start")
         EventManager.Instance().Event("NORMAL_MODE", "")
 
+    async def handler_pause(self, update, context):
+        await asyncio.sleep(0);
+        print(f"handler_pause!!!")
+        self.Send("pause mode start")
+        EventManager.Instance().Event("PAUSE", "")
+
+    async def handler_resume(self, update, context):
+        await asyncio.sleep(0);
+        print(f"handler_resume!!!")
+        self.Send("resume mode start")
+        EventManager.Instance().Event("RESUME", "")    
 
 '''
 async def help_handler(update, context):
