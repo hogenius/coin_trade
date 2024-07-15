@@ -31,8 +31,8 @@ class CoinTrade:
         EventManager.Instance().Regist("RELOAD_CONFIG", self.ReloadConfing)
         EventManager.Instance().Regist("SAFE_MODE", self.SetSafeMode)
         EventManager.Instance().Regist("NORMAL_MODE", self.SetNormalMode)
-        EventManager.Instance().Regist("PAUSE", self.SetNormalMode)
-        EventManager.Instance().Regist("RESUME", self.SetNormalMode)
+        EventManager.Instance().Regist("PAUSE", self.SetPause)
+        EventManager.Instance().Regist("RESUME", self.SetResume)
 
     def SetResume(self, data):
         self.is_pause = False
