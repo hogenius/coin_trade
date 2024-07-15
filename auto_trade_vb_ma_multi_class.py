@@ -311,9 +311,6 @@ class CoinTrade:
 
     def coin_process(self, isForce):
 
-        if self.is_pause:
-            return
-
         # 자동매매 시작
         try:
             self.check_available_krw(self.list_coin_info, isForce)
@@ -335,6 +332,9 @@ class CoinTrade:
 
                 #KST 06:57 ~ 07:00동안은 매도프로세스를 진행합니다.
                 if start_time < now < end_time:
+
+                    if self.is_pause:
+                        continue
                     #매도 프로세스 시작.
                     #전량 매도.
                     self.coin_sell(self.list_coin_info[i])
@@ -348,6 +348,9 @@ class CoinTrade:
 
                         #매수도 했었고 그에 이어서 매도도 했었다면 더이상 할게 없다.
                         if self.list_coin_info[i]['is_sell'] == True:
+                            continue
+
+                        if self.is_pause:
                             continue
 
                         rate_profit = self.list_coin_info[i]['rate_profit']
@@ -387,6 +390,9 @@ class CoinTrade:
                                 if method(coin_name, best_k, isForce) == True:
                                     check_complete_count+=1
 
+                        if self.is_pause:
+                            continue
+                        
                         # #이동평균선을 구한다.
                         # is_regulat_arr = self.check_ma(coin_name, isForce)
                         # #변동성 돌파를 구한다.
