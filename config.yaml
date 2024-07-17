@@ -7,13 +7,13 @@ loop_sec: 60
 loop_check_sec: 180
 list_coin:
 - name: "KRW-BTC"
-  rate: 7000
+  rate: 4000
   rate_profit: 0.0
   rate_stop_loss: 0.0
   check:
   - "check_ma"
   - "check_vb"
-  check_count: 5
+  check_count: 15
 - name: "KRW-ETH"
   rate: 2000
   rate_profit: 0.0
@@ -21,12 +21,20 @@ list_coin:
   check:
   - "check_ma"
   - "check_vb"
-  check_count: 5
+  check_count: 15
 - name: "KRW-SOL"
-  rate: 1000
+  rate: 2000
   rate_profit: 0.0
   rate_stop_loss: 0.0
   check:
   - "check_ma"
   - "check_vb"
-  check_count: 5
+  check_count: 15
+- name: "KRW-XRP"
+  rate: 2000
+  rate_profit: 0.0
+  rate_stop_loss: 0.0
+  check:
+  - "check_ma"
+  - "check_vb"
+  check_count: 15
