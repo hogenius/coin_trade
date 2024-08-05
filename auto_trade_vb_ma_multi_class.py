@@ -16,6 +16,7 @@ import json
 from msg_telegram import Messaging
 from config import ConfigInfo
 from event import EventManager
+from exchange_rate import ExchangeRater
 
 class CoinTrade:
 
@@ -312,6 +313,16 @@ class CoinTrade:
 
         return is_over_target_price
     
+    #환율 기준으로 체크한다.
+    def check_exchange_rate(self, coin_name, bestK, isForce):
+        rate_usd = ExchangeRater.Instance().GetUSD();
+        current_price = self.get_current_price(coin_name)
+
+        is_low_price_state = current_price < rate_usd
+        self.print_msg(f"{coin_name} - check_exchange_rate: current:{current_price:,.2f} < e_rate_usd:{rate_usd:,.2f} = {is_low_price_state}", isForce)
+
+        return is_low_price_state
+    
     def coin_process_sell(self):
         if self.is_pause:
             return False
@@ -319,7 +330,9 @@ class CoinTrade:
         #매도 프로세스 시작.
         for i in range(len(self.list_coin_info)):
             #전량 매도.
-            self.coin_sell(self.list_coin_info[i])
+            list_check = self.list_coin_info[i]['check']
+            if "check_ma" in list_check:
+                self.coin_sell(self.list_coin_info[i])
 
         return True
     
