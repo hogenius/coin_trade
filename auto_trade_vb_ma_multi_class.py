@@ -21,6 +21,7 @@ from exchange_rate import ExchangeRater
 class CoinTrade:
 
     def __init__(self, name, upbit, isTest):
+        self.is_waiting = False
         self.is_pause = False
         self.is_test = isTest
         self.upbit = upbit
@@ -440,10 +441,10 @@ class CoinTrade:
             elif start_time_wait <= now <= end_time_wait:
                 #쉬는 시간.ㅎㅋ KST 07:00 ~ 09:00
                 is_need_refesh = False
-                self.is_wating = True
-            elif self.is_wating == True:
+                self.is_waiting = True
+            elif self.is_waiting == True:
                 #쉬는 시간끝나으면 리프레쉬 해줍니다.
-                self.is_wating = False
+                self.is_waiting = False
                 is_need_refesh = True
             else:
                 #매수 체크 시간
