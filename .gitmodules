@@ -1,0 +1,3 @@
+[submodule "simple_data"]
+	path = simple_data
+	url = https://github.com/hogenius/simple_data.git
