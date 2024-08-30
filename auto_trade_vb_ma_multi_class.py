@@ -49,14 +49,15 @@ class CoinTrade:
 
     def SetSafeMode(self):
         for i in range(len(self.list_coin_info)):
-            self.list_coin_info[i]['rate_profit'] = 1.0
+            if self.list_coin_info[i]['rate_profit'] < 1.0:
+                self.list_coin_info[i]['rate_profit'] = 1.0
             self.list_coin_info[i]['check_count'] = self.list_coin_info[i]['check_count_origin'] * 2
         self.print_msg("set safe mode coin list")
         self.print_msg(self.list_coin_info)
 
     def SetNormalMode(self):
         for i in range(len(self.list_coin_info)):
-            self.list_coin_info[i]['rate_profit'] = 0.0
+            self.list_coin_info[i]['rate_profit'] = self.list_coin_info[i]['rate_profit_origin']
             self.list_coin_info[i]['check_count'] = self.list_coin_info[i]['check_count_origin']
         self.print_msg("set normal mode coin list")
         self.print_msg(self.list_coin_info)
@@ -186,6 +187,7 @@ class CoinTrade:
                 'name':data['name'], 
                 'rate':data['rate'], 
                 'rate_profit':data['rate_profit'], 
+                'rate_profit_origin':data['rate_profit'], 
                 'rate_stop_loss':data['rate_stop_loss'], 
                 'best_k':find_best_k.GetBestK(data['name']),
                 'is_buy':False, 
