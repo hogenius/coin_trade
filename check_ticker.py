@@ -2,8 +2,8 @@ import asyncio
 import pyupbit
 from config import ConfigInfo
 from statistics import stdev
-from msg_telegram import Messaging
-from event import EventManager
+from simple_data.simpledata import SimpleData
+from simple_data.simpledata import TableType
 
 class CheckTicker:
     
@@ -14,6 +14,7 @@ class CheckTicker:
         self.list_ticker = []
         self.list_ticker_warning = []
         self.list_spike = []
+        self.simple_data = SimpleData(ConfigInfo.Instance().db_path)
 
     async def InitRoutine(self):
         print("InitRoutine Start")
@@ -26,7 +27,8 @@ class CheckTicker:
 
     def print_msg(self, msg, withDiscord=True):
         if withDiscord:
-            Messaging.Instance().Send(msg)
+            self.simple_data.add_string(TableType.Msg, msg)
+            #Messaging.Instance().Send(msg)
 
     def MakeTickerList(self, listTicker, listTickerWarning):
 
@@ -107,7 +109,8 @@ class CheckTicker:
         
         if(0 < len(self.list_spike) ):
             self.print_msg(f"spike coin find!! : {self.list_spike}")
-            EventManager.Instance().Event("BUY_COIN_LIST", self.list_spike)
+            self.simple_data.add_string(TableType.Check, "BUY_COIN_LIST")
+            #EventManager.Instance().Event("BUY_COIN_LIST", self.list_spike)
         else:
             if self.is_test:
                 self.print_msg(f"no spike coin..")

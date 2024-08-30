@@ -17,6 +17,8 @@ from msg_telegram import Messaging
 from config import ConfigInfo
 from event import EventManager
 from exchange_rate import ExchangeRater
+from simple_data.simpledata import SimpleData
+from simple_data.simpledata import TableType
 
 class CoinTrade:
 
@@ -27,73 +29,89 @@ class CoinTrade:
         self.upbit = upbit
         self.list_coin_info = []
         self.config = ConfigInfo.Instance()
-        EventManager.Instance().Regist("BUY_COIN_LIST", self.BuyCoinList)
-        EventManager.Instance().Regist("REFRESH_COIN_LIST", self.RefreshCoinList)
-        EventManager.Instance().Regist("CHECK_COIN_LIST", self.CheckCoinList)
-        EventManager.Instance().Regist("RELOAD_CONFIG", self.ReloadConfing)
-        EventManager.Instance().Regist("SAFE_MODE", self.SetSafeMode)
-        EventManager.Instance().Regist("NORMAL_MODE", self.SetNormalMode)
-        EventManager.Instance().Regist("PAUSE", self.SetPause)
-        EventManager.Instance().Regist("RESUME", self.SetResume)
+        self.simple_data = SimpleData(ConfigInfo.Instance().db_path)
+        #EventManager.Instance().Regist("BUY_COIN_LIST", self.BuyCoinList)
+        # EventManager.Instance().Regist("REFRESH_COIN_LIST", self.RefreshCoinList)
+        # EventManager.Instance().Regist("CHECK_COIN_LIST", self.CheckCoinList)
+        # EventManager.Instance().Regist("RELOAD_CONFIG", self.ReloadConfing)
+        # EventManager.Instance().Regist("SAFE_MODE", self.SetSafeMode)
+        # EventManager.Instance().Regist("NORMAL_MODE", self.SetNormalMode)
+        # EventManager.Instance().Regist("PAUSE", self.SetPause)
+        # EventManager.Instance().Regist("RESUME", self.SetResume)
 
-    def SetResume(self, data):
+    def SetResume(self):
         self.is_pause = False
         self.print_msg(f"set resume mode. self.is_pause : {self.is_pause}")
 
-    def SetPause(self, data):
+    def SetPause(self):
         self.is_pause = True
         self.print_msg(f"set pause mode. self.is_pause : {self.is_pause}")
 
-    def SetSafeMode(self, data):
+    def SetSafeMode(self):
         for i in range(len(self.list_coin_info)):
             self.list_coin_info[i]['rate_profit'] = 1.0
             self.list_coin_info[i]['check_count'] = self.list_coin_info[i]['check_count_origin'] * 2
         self.print_msg("set safe mode coin list")
         self.print_msg(self.list_coin_info)
 
-    def SetNormalMode(self, data):
+    def SetNormalMode(self):
         for i in range(len(self.list_coin_info)):
             self.list_coin_info[i]['rate_profit'] = 0.0
             self.list_coin_info[i]['check_count'] = self.list_coin_info[i]['check_count_origin']
         self.print_msg("set normal mode coin list")
         self.print_msg(self.list_coin_info)
 
-    def ReloadConfing(self, data):
+    def ReloadConfing(self):
         self.config.ReloadAll()
 
-    def CheckCoinList(self, data):
+    def CheckCoinList(self):
         self.coin_process(True)
 
-    def RefreshCoinList(self, data):
+    def RefreshCoinList(self):
         self.make_coin_list(self.list_coin_info)
 
-    def BuyCoinList(self, listCoin):
+    # def BuyCoinList(self):
 
-        if len(listCoin) <= 0:
-            return
+        # if len(listCoin) <= 0:
+        #     return
         
-        # 'name':ticker, 
-        # 'stdev_volume_before':stdev_volume_before,
-        # 'stdev_volume':stdev_volume
+        # # 'name':ticker, 
+        # # 'stdev_volume_before':stdev_volume_before,
+        # # 'stdev_volume':stdev_volume
         
-        listCoin.sort(key=lambda x: x['stdev_volume'], reverse=True)
-        print(f"(TEST)BuyCoinList BuyCoin : {listCoin}")
-        #아직은 작업중이니 이벤트가 들어와도 진행을 멈춥니다.
-        return
-        for i in range(len(self.list_coin_info)):
-            coin_info = self.list_coin_info[i]
-            if coin_info['name'] != "CHECK":
-                continue
-            else:
-                coin_info['name'] = listCoin[0]['name']
-                self.coin_buy(coin_info)
+        # listCoin.sort(key=lambda x: x['stdev_volume'], reverse=True)
+        # print(f"(TEST)BuyCoinList BuyCoin : {listCoin}")
+        # #아직은 작업중이니 이벤트가 들어와도 진행을 멈춥니다.
+        # return
+        # for i in range(len(self.list_coin_info)):
+        #     coin_info = self.list_coin_info[i]
+        #     if coin_info['name'] != "CHECK":
+        #         continue
+        #     else:
+        #         coin_info['name'] = listCoin[0]['name']
+        #         self.coin_buy(coin_info)
 
     async def InitRoutine(self):
-        #self.print_msg(f"auto trade start")
+        self.print_msg(f"auto trade start")
         self.make_coin_list(self.list_coin_info)
         while True:
             self.coin_process(False)
+            if self.is_test:
+                print("InitRoutine")
             await asyncio.sleep(ConfigInfo.Instance().loop_sec)
+
+    async def InitPollingRoutine(self):
+
+        while True:
+            list_check = self.simple_data.load_strings(TableType.Check)
+            if self.is_test:
+                print(f"InitPollingRoutine : {list_check}");
+            for check_name in list_check:
+                if hasattr(self, check_name):
+                    method = getattr(self, check_name)
+                    method()
+            
+            await asyncio.sleep(ConfigInfo.Instance().polling_sec)
 
     def get_target_price(self, ticker, k):
         """변동성 돌파 전략으로 매수 목표가 조회"""
@@ -149,7 +167,14 @@ class CoinTrade:
         print(msg)
 
         if withNotification:
-            Messaging.Instance().Send(msg)
+            #Messaging.Instance().Send(msg)
+            now = datetime.datetime.now()
+            if self.is_test:
+                message = f"TestMode\n[{now.strftime('%Y-%m-%d %H:%M:%S')}]\n{str(msg)}"
+            else:
+                message = f"[{now.strftime('%Y-%m-%d %H:%M:%S')}]\n{str(msg)}"
+
+            self.simple_data.add_string(TableType.Msg, message)
 
     def make_coin_list(self, list):
 
