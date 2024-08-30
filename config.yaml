@@ -3,7 +3,7 @@ ma_line_1: 2
 ma_line_2: 7
 ma_line_3: 50
 ma_check_sec: 10
-db_path: "/home/hogenius/simple_msg.db"
+db_path: "/home/simple_msg.db"
 polling_sec: 1
 loop_sec: 60
 loop_check_sec: 180
@@ -13,9 +13,8 @@ list_coin:
     rate_profit: 0.0
     rate_stop_loss: 0.0
     check:
-      - "check_ma"
       - "check_vb"
-    check_count: 5
+    check_count: 10
   - name: "KRW-ETH"
     rate: 2000
     rate_profit: 0.0
@@ -23,7 +22,7 @@ list_coin:
     check:
       - "check_ma"
       - "check_vb"
-    check_count: 5
+    check_count: 10
   - name: "KRW-SOL"
     rate: 1000
     rate_profit: 0.0
@@ -31,7 +30,7 @@ list_coin:
     check:
       - "check_ma"
       - "check_vb"
-    check_count: 5
+    check_count: 10
   - name: "KRW-XRP"
     rate: 2000
     rate_profit: 0.0
@@ -39,11 +38,11 @@ list_coin:
     check:
       - "check_ma"
       - "check_vb"
-    check_count: 5
+    check_count: 10
   - name: "KRW-USDT"
     rate: 2000
-    rate_profit: 1.0
+    rate_profit: 2.0
     rate_stop_loss: 0.0
     check:
       - "check_exchange_rate"
-    check_count: 5
+    check_count: 0
