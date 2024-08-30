@@ -17,6 +17,9 @@ class ConfigInfo(SingletonInstane):
             self.loop_sec = config_data['loop_sec']
             self.loop_check_sec = config_data['loop_check_sec']
             self.list_coin = config_data['list_coin']
+            self.db_path = config_data['db_path']
+            self.polling_sec = config_data['polling_sec']
+            
 
     def LoadSecurity(self):
         with open('security.yaml') as s:
