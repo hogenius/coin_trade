@@ -17,8 +17,8 @@ from msg_telegram import Messaging
 from config import ConfigInfo
 from event import EventManager
 from exchange_rate import ExchangeRater
-from simple_data.simpledata import SimpleData
-from simple_data.simpledata import TableType
+from simple_common.simpledata import SimpleData
+from simple_common.simpledata import TableType
 
 class CoinTrade:
 
