@@ -19,6 +19,7 @@ from event import EventManager
 from exchange_rate import ExchangeRater
 from simple_common.simpledata import SimpleData
 from simple_common.simpledata import TableType
+from simple_common.Logging import SimpleLogger
 
 class CoinTrade:
 
@@ -38,6 +39,7 @@ class CoinTrade:
         # EventManager.Instance().Regist("NORMAL_MODE", self.SetNormalMode)
         # EventManager.Instance().Regist("PAUSE", self.SetPause)
         # EventManager.Instance().Regist("RESUME", self.SetResume)
+        self.logging = SimpleLogger(name="coin_trade", log_file="coin_trade.log")
 
     def SetResume(self):
         self.is_pause = False
@@ -166,6 +168,7 @@ class CoinTrade:
             msg = data
 
         print(msg)
+        self.logging.log(msg)
 
         if withNotification:
             #Messaging.Instance().Send(msg)
@@ -195,12 +198,12 @@ class CoinTrade:
                 'krw_avaiable':-1,
                 'check':data['check'],
                 'check_count':data['check_count'],
-                'check_count_origin':data['check_count']
+                'check_count_origin':data['check_count'],
+                'is_sell_routine':data['is_sell_routine']
                 })
         self.check_available_krw(list)
         self.print_msg("make_coin_list")
         self.print_msg(list)
-
 
     def check_available_krw(self, list, isForce=False):
         #보유하고 있는 현금을 기준으로 비율을 정산합니다.
@@ -358,8 +361,9 @@ class CoinTrade:
         #매도 프로세스 시작.
         for i in range(len(self.list_coin_info)):
             #전량 매도.
-            list_check = self.list_coin_info[i]['check']
-            if "check_ma" in list_check:
+            is_sell_routine = self.list_coin_info[i]['is_sell_routine']
+            #list_check = self.list_coin_info[i]['check']
+            if is_sell_routine:
                 self.coin_sell(self.list_coin_info[i])
 
         return True

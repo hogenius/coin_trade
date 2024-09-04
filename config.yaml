@@ -15,6 +15,7 @@ list_coin:
     check:
       - "check_vb"
     check_count: 10
+    is_sell_routine: false
   - name: "KRW-ETH"
     rate: 2000
     rate_profit: 0.0
@@ -23,6 +24,7 @@ list_coin:
       - "check_ma"
       - "check_vb"
     check_count: 10
+    is_sell_routine: true
   - name: "KRW-SOL"
     rate: 1000
     rate_profit: 0.0
@@ -31,6 +33,7 @@ list_coin:
       - "check_ma"
       - "check_vb"
     check_count: 10
+    is_sell_routine: true
   - name: "KRW-XRP"
     rate: 2000
     rate_profit: 0.0
@@ -39,6 +42,7 @@ list_coin:
       - "check_ma"
       - "check_vb"
     check_count: 10
+    is_sell_routine: true
   - name: "KRW-USDT"
     rate: 2000
     rate_profit: 2.0
@@ -46,3 +50,4 @@ list_coin:
     check:
       - "check_exchange_rate"
     check_count: 0
+    is_sell_routine: false

@@ -2,8 +2,8 @@ import asyncio
 import pyupbit
 from config import ConfigInfo
 from statistics import stdev
-from simple_data.simpledata import SimpleData
-from simple_data.simpledata import TableType
+from simple_common.simpledata import SimpleData
+from simple_common.simpledata import TableType
 
 class CheckTicker:
     
