@@ -9,34 +9,17 @@ loop_sec: 60
 loop_check_sec: 180
 list_coin:
   - name: "KRW-BTC"
-    rate: 3000
-    rate_profit: 0.0
-    rate_stop_loss: 0.0
-    check:
-      - "check_vb"
-    check_count: 10
-    is_sell_routine: false
-  - name: "KRW-ETH"
-    rate: 2000
-    rate_profit: 0.0
-    rate_stop_loss: 0.0
-    check:
-      - "check_ma"
-      - "check_vb"
-    check_count: 10
-    is_sell_routine: true
-  - name: "KRW-SOL"
     rate: 1000
-    rate_profit: 0.0
+    rate_profit: 2.0
     rate_stop_loss: 0.0
     check:
       - "check_ma"
       - "check_vb"
     check_count: 10
     is_sell_routine: true
-  - name: "KRW-XRP"
-    rate: 2000
-    rate_profit: 0.0
+  - name: "KRW-ETH"
+    rate: 1000
+    rate_profit: 2.0
     rate_stop_loss: 0.0
     check:
       - "check_ma"
@@ -51,3 +34,48 @@ list_coin:
       - "check_exchange_rate"
     check_count: 0
     is_sell_routine: false
+  - name: "KRW-SOL"
+    rate: 1000
+    rate_profit: 2.0
+    rate_stop_loss: 0.0
+    check:
+      - "check_ma"
+      - "check_vb"
+    check_count: 10
+    is_sell_routine: true
+  - name: "KRW-XRP"
+    rate: 1000
+    rate_profit: 2.0
+    rate_stop_loss: 0.0
+    check:
+      - "check_ma"
+      - "check_vb"
+    check_count: 10
+    is_sell_routine: true
+  - name: "KRW-TRX"
+    rate: 1000
+    rate_profit: 2.0
+    rate_stop_loss: 0.0
+    check:
+      - "check_ma"
+      - "check_vb"
+    check_count: 10
+    is_sell_routine: true
+  - name: "KRW-APT"
+    rate: 1000
+    rate_profit: 2.0
+    rate_stop_loss: 0.0
+    check:
+      - "check_ma"
+      - "check_vb"
+    check_count: 10
+    is_sell_routine: true
+  - name: "KRW-SUI"
+    rate: 1000
+    rate_profit: 2.0
+    rate_stop_loss: 0.0
+    check:
+      - "check_ma"
+      - "check_vb"
+    check_count: 10
+    is_sell_routine: true
