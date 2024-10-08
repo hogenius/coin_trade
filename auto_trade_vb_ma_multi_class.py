@@ -277,7 +277,7 @@ class CoinTrade:
             if self.is_test == False:
                 self.upbit.buy_market_order(coinInfo['name'], buy_krw)
 
-            self.print_msg(f"autotrade buy_market_order {coinInfo['name']}:{buy_krw:,.2f}")
+            self.print_msg(f"[BUY] {coinInfo['name']}:{buy_krw:,.2f}")
 
             #매수한것으로 표기. 하루에 반복적으로 구매 하지 않습니다.
             #하루가 지나서 전량 매도가 되기전에 사용자 임의로 매도를 할수 있도록 말이죠.
@@ -287,7 +287,7 @@ class CoinTrade:
 
             #print(f"after buy list_coin_info : {list_coin_info}")
         else:
-            self.print_msg(f"autotrade not enough money to buy_market_order {coinInfo['name']}. krw:{krw:,.2f}")
+            self.print_msg(f"[BUY ERROR] not enough money to buy_market_order {coinInfo['name']}. krw:{krw:,.2f}")
 
     def coin_sell(self, coinInfo):
         
@@ -303,9 +303,9 @@ class CoinTrade:
             if "buy_price" in coinInfo:
                 margin_krw = sell_krw - coinInfo['buy_price']
                 del coinInfo['buy_price']
-                self.print_msg(f"autotrade sell_market_order\n{coinInfo['name']}:{sell_coin}\nsell_krw:{sell_krw:,.2f}\nmargin_krw:{margin_krw:,.2f}")
+                self.print_msg(f"[SELL] {coinInfo['name']}:{sell_coin}\nsell_krw:{sell_krw:,.2f}\nmargin_krw:{margin_krw:,.2f}")
             else:
-                self.print_msg(f"autotrade sell_market_order\n{coinInfo['name']}:{sell_coin}\nsell_krw:{sell_krw:,.2f}\nmargin_krw:unknown")
+                self.print_msg(f"[SELL] {coinInfo['name']}:{sell_coin}\nsell_krw:{sell_krw:,.2f}\nmargin_krw:unknown")
             coinInfo['is_sell'] = True
             coinInfo['sell_price'] = sell_krw
         
@@ -444,11 +444,11 @@ class CoinTrade:
                         #체크완료 카운트를 하나 뺍니다.
                         set_check_count = check_count - 1
                         self.list_coin_info[i]['check_count'] = set_check_count
-                        self.print_msg(f"autotrade check buy_market_order {self.list_coin_info[i]['name']}.  remain check count:{set_check_count}")
+                        self.print_msg(f"[CHECK BUY] {self.list_coin_info[i]['name']}.  remain check count:{set_check_count}")
 
                 elif check_count != self.list_coin_info[i]['check_count_origin']:
                     self.list_coin_info[i]['check_count'] = self.list_coin_info[i]['check_count_origin']
-                    self.print_msg(f"autotrade check reset buy_market_order {self.list_coin_info[i]['name']}")
+                    self.print_msg(f"[CHECK RESET] {self.list_coin_info[i]['name']}")
 
         return False
 
