@@ -199,7 +199,8 @@ class CoinTrade:
                 'check':data['check'],
                 'check_count':data['check_count'],
                 'check_count_origin':data['check_count'],
-                'is_sell_routine':data['is_sell_routine']
+                'is_sell_routine':data['is_sell_routine'],
+                'is_repeat_buy_routine':data['is_repeat_buy_routine'],
                 })
         self.check_available_krw(list)
         self.print_msg("make_coin_list")
@@ -409,6 +410,11 @@ class CoinTrade:
                     if is_profit_sell or is_loss_sell:
                         #전량 매도.
                         self.coin_sell(self.list_coin_info[i])
+
+                        if self.list_coin_info[i]['is_repeat_buy_routine'] == True:
+                             self.list_coin_info[i]['is_buy'] = False
+                             self.list_coin_info[i]['is_sell'] = False
+
                 else:
                     self.print_msg(f"{coin_name} - check sell: do nothing..", isForce)
 
