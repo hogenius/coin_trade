@@ -3,7 +3,7 @@ ma_line_1: 2
 ma_line_2: 7
 ma_line_3: 50
 ma_check_sec: 10
-db_path: "/home/simple_msg.db"
+db_path: "C:/Users/hogen/coin_trade/simple_msg.db"
 polling_sec: 1
 loop_sec: 60
 loop_check_sec: 180
@@ -12,78 +12,108 @@ list_coin:
     rate: 1000
     rate_profit: 2.0
     rate_stop_loss: 0.0
-    check:
-      - "check_ma"
-      - "check_vb"
-    check_count: 10
+    check_buy:
+      - "check_buy_ma"
+      - "check_buy_vb"
+    check_buy_count: 10
+    check_sell:
+      - "check_sell_time"
+      - "check_sell_profit"
+      - "check_sell_loss"
     is_sell_routine: true
     is_repeat_buy_routine: false
   - name: "KRW-ETH"
     rate: 1000
     rate_profit: 2.0
     rate_stop_loss: 0.0
-    check:
-      - "check_ma"
-      - "check_vb"
-    check_count: 10
+    check_buy:
+      - "check_buy_ma"
+      - "check_buy_vb"
+    check_buy_count: 10
+    check_sell:
+      - "check_sell_time"
+      - "check_sell_profit"
+      - "check_sell_loss"
     is_sell_routine: true
     is_repeat_buy_routine: false
   - name: "KRW-USDT"
     rate: 2000
     rate_profit: 2.0
     rate_stop_loss: 0.0
-    check:
-      - "check_exchange_rate"
-    check_count: 0
+    check_buy:
+      - "check_buy_exchange_rate"
+    check_buy_count: 0
+    check_sell:
+      - "check_sell_profit"
     is_sell_routine: false
     is_repeat_buy_routine: true
   - name: "KRW-SOL"
     rate: 1000
     rate_profit: 2.0
     rate_stop_loss: 0.0
-    check:
-      - "check_ma"
-      - "check_vb"
-    check_count: 10
+    check_buy:
+      - "check_buy_ma"
+      - "check_buy_vb"
+    check_buy_count: 10
+    check_sell:
+      - "check_sell_time"
+      - "check_sell_profit"
+      - "check_sell_loss"
     is_sell_routine: true
     is_repeat_buy_routine: false
   - name: "KRW-XRP"
     rate: 1000
     rate_profit: 2.0
     rate_stop_loss: 0.0
-    check:
-      - "check_ma"
-      - "check_vb"
-    check_count: 10
+    check_buy:
+      - "check_buy_ma"
+      - "check_buy_vb"
+    check_buy_count: 10
+    check_sell:
+      - "check_sell_time"
+      - "check_sell_profit"
+      - "check_sell_loss"
     is_sell_routine: true
     is_repeat_buy_routine: false
   - name: "KRW-TRX"
     rate: 1000
     rate_profit: 2.0
     rate_stop_loss: 0.0
-    check:
-      - "check_ma"
-      - "check_vb"
-    check_count: 10
+    check_buy:
+      - "check_buy_ma"
+      - "check_buy_vb"
+    check_buy_count: 10
+    check_sell:
+      - "check_sell_time"
+      - "check_sell_profit"
+      - "check_sell_loss"
     is_sell_routine: true
     is_repeat_buy_routine: false
   - name: "KRW-APT"
     rate: 1000
     rate_profit: 2.0
     rate_stop_loss: 0.0
-    check:
-      - "check_ma"
-      - "check_vb"
-    check_count: 10
+    check_buy:
+      - "check_buy_ma"
+      - "check_buy_vb"
+    check_buy_count: 10
+    check_sell:
+      - "check_sell_time"
+      - "check_sell_profit"
+      - "check_sell_loss"
     is_sell_routine: true
     is_repeat_buy_routine: false
   - name: "KRW-SUI"
     rate: 1000
     rate_profit: 2.0
     rate_stop_loss: 0.0
-    check:
-      - "check_ma"
-      - "check_vb"
-    check_count: 10
+    check_buy:
+      - "check_buy_ma"
+      - "check_buy_vb"
+    check_buy_count: 10
+    check_sell:
+      - "check_sell_time"
+      - "check_sell_profit"
+      - "check_sell_loss"
     is_sell_routine: true
     is_repeat_buy_routine: false

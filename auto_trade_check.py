@@ -196,9 +196,10 @@ class CoinTrade:
                 'is_buy':False, 
                 'is_sell':False, 
                 'krw_avaiable':-1,
-                'check':data['check_buy'],
-                'check_count':data['check_buy_count'],
-                'check_count_origin':data['check_buy_count'],
+                'check_sell':data['check_sell'],
+                'check_buy':data['check_buy'],
+                'check_count':data['check_count'],
+                'check_count_origin':data['check_count'],
                 'is_sell_routine':data['is_sell_routine'],
                 'is_repeat_buy_routine':data['is_repeat_buy_routine'],
                 })
@@ -313,8 +314,8 @@ class CoinTrade:
         return result
        
     #이동평균선을 구한다.
-    def check_buy_ma(self, coin_name, value, isForce):
-
+    def check_buy_ma(self, coin_info, balances, isForce):
+        coin_name = coin_info['name']
         df = pyupbit.get_ohlcv(coin_name, count=self.config.ma_3)
         df['MA_1'] = df['close'].rolling(self.config.ma_1).mean()
         df['MA_2'] = df['close'].rolling(self.config.ma_2).mean()
@@ -336,7 +337,9 @@ class CoinTrade:
         return is_regulat_arr
 
      #변동성 돌파를 구한다.
-    def check_buy_vb(self, coin_name, bestK, isForce):
+    def check_buy_vb(self, coin_info, balances, isForce):
+        coin_name = coin_info['name']
+        bestK = coin_info['best_k']
         target_price = self.get_target_price(coin_name, bestK)
         current_price = self.get_current_price(coin_name)
 
@@ -346,7 +349,8 @@ class CoinTrade:
         return is_over_target_price
     
     #환율 기준으로 체크한다.
-    def check_buy_exchange_rate(self, coin_name, bestK, isForce):
+    def check_buy_exchange_rate(self, coin_info, balances, isForce):
+        coin_name = coin_info['name']
         rate_usd = ExchangeRater.Instance().GetUSD();
         current_price = self.get_current_price(coin_name)
 
@@ -354,6 +358,40 @@ class CoinTrade:
         self.print_msg(f"{coin_name} - check_exchange_rate: current:{current_price:,.2f} < e_rate_usd:{rate_usd:,.2f} = {is_low_price_state}", isForce)
 
         return is_low_price_state
+    
+    #무조건 판매 시간인지 체크한다.
+    def check_sell_time(self, coin_info, balances, isForce):
+        now = datetime.datetime.now()
+        end_time = now.replace(hour=7, minute=0, second=0, microsecond=0)
+        start_time = end_time - datetime.timedelta(seconds=self.config.loop_sec*3)
+
+        #매도 시간 KST 06:57 ~ 07:00
+        return start_time < now < end_time
+    
+    #수익비율 조건 상태인지 체크한다.
+    def check_sell_profit(self, coin_info, balances, isForce):
+        coin_name = coin_info['name']
+        rate_profit = coin_info['rate_profit']
+        result = False
+        if 0 < rate_profit:
+            #매수한 상태이니 이제 수익률을 계산합니다.
+            revenue_rate = self.get_revenue_rate(balances, coin_name)
+            result = rate_profit <= revenue_rate  
+        self.print_msg(f"{coin_name} - check sell: rate_profit({rate_profit}) <= revenue_rate({revenue_rate}) = {result}", isForce)
+        return result
+
+    #손해비율 조건 상태인지 체크한다.
+    def check_sell_loss(self, coin_info, balances, isForce):
+        coin_name = coin_info['name']
+        rate_stop_loss = coin_info['rate_stop_loss']
+        result = False
+        if rate_stop_loss < 0:
+            #매수한 상태이니 이제 수익률을 계산합니다.
+            revenue_rate = self.get_revenue_rate(balances, coin_name)
+            result = revenue_rate <= rate_stop_loss
+
+        self.print_msg(f"{coin_name} - check sell: revenue_rate({revenue_rate}) <= rate_stop_loss({rate_stop_loss}) = {result}", isForce)
+        return result
     
     def coin_process_sell(self):
         if self.is_pause:
@@ -426,7 +464,7 @@ class CoinTrade:
                     check_name = list_check[j]
                     if hasattr(self, check_name):
                         method = getattr(self, check_name)
-                        if method(coin_name, best_k, isForce) == True:
+                        if method(self.list_coin_info[i], best_k, isForce) == True:
                             check_complete_count+=1
 
                 if self.is_pause:
@@ -500,3 +538,109 @@ class CoinTrade:
             #print(f"autotrade check best k {best_k}")
         except Exception as e:
             print(e)
+
+
+    def coin_main_loop(self, isForce):
+        
+        try:
+            if self.is_pause:
+                return
+         
+            balances = self.upbit.get_balances()
+
+            count_re_process = 0
+            count_sell_process = 0
+            count_buy_process = 0
+
+            for i in range(len(self.list_coin_info)):
+                coin_info = self.list_coin_info[i]
+                if coin_info['is_sell'] == True:
+                    #한번 매수했다가 매도까지 했었습니다.
+
+                    
+                    if coin_info['is_repeat_buy_routine'] == True:
+                        #다시 매수 프로세스를 활성화하는 옵션이라면 초기화.
+                        coin_info['is_buy'] = False
+                        coin_info['is_sell'] = False
+                        count_re_process += 1
+                    else:
+                        #시간되면 무조건 매도 조건이 붙어있는경우.
+                        list_check = coin_info['check_sell']
+                        is_have_check_sell_time = False
+                        for j in range(len(list_check)):
+                            check_name = list_check[j]
+                            if check_name == "check_sell_time":
+                                is_have_check_sell_time = True
+                                break
+                        if is_have_check_sell_time:
+                            now = datetime.datetime.now()
+                            end_time_wait = now.replace(hour=9, minute=0, second=0, microsecond=0)
+                            if end_time_wait <= now:
+                                coin_info['is_buy'] = False
+                                coin_info['is_sell'] = False
+                                coin_info['krw_avaiable'] = -1
+                                coin_info['check_buy_count'] = coin_info['check_buy_count_origin']
+                                coin_info['best_k'] = find_best_k.GetBestK(coin_info['name'])
+                                count_re_process += 1
+                        
+                else:
+                    #매도 혹은 매수 프로세스를 해야합니다.
+                    if coin_info['is_buy'] == True:
+                        #매수를 했었다면 매도 체크 프로세스를 실행.
+
+                        #체크 메서드를 루프로 실행해서 체크한다.
+                        check_complete_count = 0
+                        list_check = coin_info['check_sell']
+                        for j in range(len(list_check)):
+                            check_name = list_check[j]
+                            if hasattr(self, check_name):
+                                method = getattr(self, check_name)
+                                if method(coin_info, balances, isForce) == True:
+                                    check_complete_count+=1
+                        
+                        #매도 체크 조건을 모두 만족했다면 매도처리!            
+                        if(len(list_check) <= check_complete_count):
+                            self.coin_sell(coin_info)
+                            count_sell_process+=1
+
+                    else:
+                        #매수가 가능한지 체크 프로세스를 실행.
+
+                        #체크 메서드를 루프로 실행해서 체크한다.
+                        check_complete_count = 0
+                        list_check = coin_info['check_buy']
+                        for j in range(len(list_check)):
+                            check_name = list_check[j]
+                            if hasattr(self, check_name):
+                                method = getattr(self, check_name)
+                                if method(coin_info, balances, isForce) == True:
+                                    check_complete_count+=1
+
+                        #매수 체크 조건을 모두 만족했다!    
+                        if(len(list_check) <= check_complete_count):
+                            
+                            #매수 카운팅을 체크합니다.
+                            check_count = coin_info['check_buy_count']
+                            if check_count <= 0:
+                                    #매수합니다.
+                                    #print(f"is_regulat_arr && target_price:{target_price} < current_price:{current_price}")
+                                    self.coin_buy(coin_info)
+                                    count_buy_process+=1
+                            else:
+                                #체크완료 카운트를 하나 뺍니다.
+                                set_check_count = check_count - 1
+                                coin_info['check_buy_count'] = set_check_count
+                                self.print_msg(f"[CHECK BUY] {coin_info['name']}.  remain check count:{set_check_count}")
+
+                        #매수 체크 조건을 불만족했다면 check_buy_count 초기화.
+                        elif check_count != coin_info['check_buy_count_origin']:
+                                coin_info['check_buy_count'] = coin_info['check_buy_count_origin']
+                                self.print_msg(f"[CHECK RESET] {coin_info['name']}")
+
+            if 0 < count_re_process or 0 < count_sell_process or 0 < count_buy_process:
+                self.check_available_krw(self.list_coin_info, isForce)
+        except Exception as e:
+            print(e)
+            self.print_msg(f"[ERROR] {e}")
+
+            
