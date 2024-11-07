@@ -53,14 +53,14 @@ class CoinTrade:
         for i in range(len(self.list_coin_info)):
             if self.list_coin_info[i]['rate_profit'] < 1.0:
                 self.list_coin_info[i]['rate_profit'] = 1.0
-            self.list_coin_info[i]['check_count'] = self.list_coin_info[i]['check_count_origin'] * 2
+            self.list_coin_info[i]['check_buy_count'] = self.list_coin_info[i]['check_buy_count_origin'] * 2
         self.print_msg("set safe mode coin list")
         self.print_msg(self.list_coin_info)
 
     def SetNormalMode(self):
         for i in range(len(self.list_coin_info)):
             self.list_coin_info[i]['rate_profit'] = self.list_coin_info[i]['rate_profit_origin']
-            self.list_coin_info[i]['check_count'] = self.list_coin_info[i]['check_count_origin']
+            self.list_coin_info[i]['check_buy_count'] = self.list_coin_info[i]['check_buy_count_origin']
         self.print_msg("set normal mode coin list")
         self.print_msg(self.list_coin_info)
 
@@ -198,8 +198,8 @@ class CoinTrade:
                 'krw_avaiable':-1,
                 'check_sell':data['check_sell'],
                 'check_buy':data['check_buy'],
-                'check_count':data['check_count'],
-                'check_count_origin':data['check_count'],
+                'check_buy_count':data['check_buy_count'],
+                'check_buy_count_origin':data['check_buy_count'],
                 'is_sell_routine':data['is_sell_routine'],
                 'is_repeat_buy_routine':data['is_repeat_buy_routine'],
                 })
@@ -477,7 +477,7 @@ class CoinTrade:
                 
                 #이동평균선 정배열이면서 best_k에 의해 변동성이 돌파했다면?! 매수 가즈아
                 #if is_regulat_arr and is_over_target_price:
-                check_count = self.list_coin_info[i]['check_count']
+                check_count = self.list_coin_info[i]['check_buy_count']
                 if len(list_check) <= check_complete_count:
 
                     if check_count <= 0:
@@ -487,11 +487,11 @@ class CoinTrade:
                     else:
                         #체크완료 카운트를 하나 뺍니다.
                         set_check_count = check_count - 1
-                        self.list_coin_info[i]['check_count'] = set_check_count
+                        self.list_coin_info[i]['check_buy_count'] = set_check_count
                         self.print_msg(f"[CHECK BUY] {self.list_coin_info[i]['name']}.  remain check count:{set_check_count}")
 
-                elif check_count != self.list_coin_info[i]['check_count_origin']:
-                    self.list_coin_info[i]['check_count'] = self.list_coin_info[i]['check_count_origin']
+                elif check_count != self.list_coin_info[i]['check_buy_count_origin']:
+                    self.list_coin_info[i]['check_buy_count'] = self.list_coin_info[i]['check_buy_count_origin']
                     self.print_msg(f"[CHECK RESET] {self.list_coin_info[i]['name']}")
 
         return False
