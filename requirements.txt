@@ -1,0 +1,8 @@
+pyupbit
+pyyaml
+backtesting
+python-telegram-bot
+asyncio
+schedule
+yfinance
+bokeh==2.4.3
