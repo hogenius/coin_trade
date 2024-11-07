@@ -68,7 +68,7 @@ class CoinTrade:
         self.config.ReloadAll()
 
     def CheckCoinList(self):
-        self.coin_process(True)
+        self.coin_main_loop(True)
 
     def RefreshCoinList(self):
         self.make_coin_list(self.list_coin_info)
@@ -98,7 +98,7 @@ class CoinTrade:
         self.print_msg(f"auto trade start")
         self.make_coin_list(self.list_coin_info)
         while True:
-            self.coin_process(False)
+            self.coin_main_loop(False)
             if self.is_test:
                 print("InitRoutine")
             await asyncio.sleep(ConfigInfo.Instance().loop_sec)
@@ -393,153 +393,6 @@ class CoinTrade:
         self.print_msg(f"{coin_name} - check sell: revenue_rate({revenue_rate}) <= rate_stop_loss({rate_stop_loss}) = {result}", isForce)
         return result
     
-    def coin_process_sell(self):
-        if self.is_pause:
-            return False
-        
-        #매도 프로세스 시작.
-        for i in range(len(self.list_coin_info)):
-            #전량 매도.
-            is_sell_routine = self.list_coin_info[i]['is_sell_routine']
-            #list_check = self.list_coin_info[i]['check']
-            if is_sell_routine:
-                self.coin_sell(self.list_coin_info[i])
-
-        return True
-    
-    def coin_process_buy_check(self, isForce):
-
-        balances = self.upbit.get_balances()
-        
-        #매수 프로세스 시작.
-        for i in range(len(self.list_coin_info)):
-            coin_name = self.list_coin_info[i]['name']
-            best_k = self.list_coin_info[i]['best_k']
-
-            if self.list_coin_info[i]['is_buy'] == True:
-
-                #매수도 했었고 그에 이어서 매도도 했었다면 더이상 할게 없다.
-                if self.list_coin_info[i]['is_sell'] == True:
-                    continue
-
-                if self.is_pause:
-                    continue
-
-                rate_profit = self.list_coin_info[i]['rate_profit']
-                rate_stop_loss = self.list_coin_info[i]['rate_stop_loss']
-                is_check_profit = 0 < rate_profit
-                is_check_stop_loss = rate_stop_loss < 0
-                if is_check_profit or is_check_stop_loss:
-
-                    #매수한 상태이니 이제 수익률을 계산합니다.
-                    revenue_rate = self.get_revenue_rate(balances, self.list_coin_info[i]['name'])
-
-                    is_profit_sell = is_check_profit and rate_profit <= revenue_rate
-                    is_loss_sell = is_check_stop_loss and revenue_rate <= rate_stop_loss
-
-                    if is_check_profit:
-                        #익절
-                        self.print_msg(f"{coin_name} - check sell: rate_profit({rate_profit}) <= revenue_rate({revenue_rate}) = {is_profit_sell}", isForce)
-
-                    if is_check_stop_loss:
-                        #손절
-                        self.print_msg(f"{coin_name} - check sell: revenue_rate({revenue_rate}) <= rate_stop_loss({rate_stop_loss}) = {is_loss_sell}", isForce)
-
-                    if is_profit_sell or is_loss_sell:
-                        #전량 매도.
-                        self.coin_sell(self.list_coin_info[i])
-
-                        if self.list_coin_info[i]['is_repeat_buy_routine'] == True:
-                             self.list_coin_info[i]['is_buy'] = False
-                             self.list_coin_info[i]['is_sell'] = False
-
-                else:
-                    self.print_msg(f"{coin_name} - check sell: do nothing..", isForce)
-
-            else:
-                
-                check_complete_count = 0
-                list_check = self.list_coin_info[i]['check']
-                for j in range(len(list_check)):
-                    check_name = list_check[j]
-                    if hasattr(self, check_name):
-                        method = getattr(self, check_name)
-                        if method(self.list_coin_info[i], best_k, isForce) == True:
-                            check_complete_count+=1
-
-                if self.is_pause:
-                    continue
-                
-                # #이동평균선을 구한다.
-                # is_regulat_arr = self.check_ma(coin_name, isForce)
-                # #변동성 돌파를 구한다.
-                # is_over_target_price = self.check_vb(coin_name, self.list_coin_info[i]['best_k'], isForce)
-                
-                #이동평균선 정배열이면서 best_k에 의해 변동성이 돌파했다면?! 매수 가즈아
-                #if is_regulat_arr and is_over_target_price:
-                check_count = self.list_coin_info[i]['check_buy_count']
-                if len(list_check) <= check_complete_count:
-
-                    if check_count <= 0:
-                        #매수합니다.
-                        #print(f"is_regulat_arr && target_price:{target_price} < current_price:{current_price}")
-                        self.coin_buy(self.list_coin_info[i])
-                    else:
-                        #체크완료 카운트를 하나 뺍니다.
-                        set_check_count = check_count - 1
-                        self.list_coin_info[i]['check_buy_count'] = set_check_count
-                        self.print_msg(f"[CHECK BUY] {self.list_coin_info[i]['name']}.  remain check count:{set_check_count}")
-
-                elif check_count != self.list_coin_info[i]['check_buy_count_origin']:
-                    self.list_coin_info[i]['check_buy_count'] = self.list_coin_info[i]['check_buy_count_origin']
-                    self.print_msg(f"[CHECK RESET] {self.list_coin_info[i]['name']}")
-
-        return False
-
-    def coin_process(self, isForce):
-
-        # 자동매매 시작
-        try:
-            is_need_refesh = False
-            
-            now = datetime.datetime.now()
-            end_time = now.replace(hour=7, minute=0, second=0, microsecond=0)
-            start_time = end_time - datetime.timedelta(seconds=self.config.loop_sec*3)
-
-            start_time_wait = end_time
-            end_time_wait = now.replace(hour=9, minute=0, second=0, microsecond=0)
-
-            if start_time < now < end_time:
-                #매도 시간 KST 06:57 ~ 07:00
-                self.check_available_krw(self.list_coin_info, isForce)
-                is_need_refesh = self.coin_process_sell()
-            elif start_time_wait <= now <= end_time_wait:
-                #쉬는 시간.ㅎㅋ KST 07:00 ~ 09:00
-                is_need_refesh = False
-                self.is_waiting = True
-            elif self.is_waiting == True:
-                #쉬는 시간끝나으면 리프레쉬 해줍니다.
-                self.is_waiting = False
-                is_need_refesh = True
-            else:
-                #매수 체크 시간
-                self.check_available_krw(self.list_coin_info, isForce)
-                is_need_refesh = self.coin_process_buy_check(isForce)
-            
-            #초기화 구문.
-            if is_need_refesh:    
-                self.print_msg("autotrade refresh")
-                self.make_coin_list(self.list_coin_info)
-
-            #test = 1
-            #print(f"autotrade check")
-
-            #best_k = find_best_k.GetBestK()
-            #print(f"autotrade check best k {best_k}")
-        except Exception as e:
-            print(e)
-
-
     def coin_main_loop(self, isForce):
         
         try:
