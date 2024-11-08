@@ -45,7 +45,8 @@ def get_ror_by_df(df, k=0.5):
                          df['close'] / df['target'] - fee,
                          1)
 
-    ror = df['ror'].cumprod()[-2]
+    #ror = df['ror'].cumprod()[-2]
+    ror = df['ror'].cumprod().iloc[-2]
     #print("%.1f %f" % (k, ror))
     #print(f"{df}")
     return ror
