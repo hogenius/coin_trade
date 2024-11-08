@@ -165,7 +165,11 @@ class CoinTrade:
                 })
         self.check_available_krw(list)
         self.print_msg("make_coin_list")
-        self.print_msg(list)
+        for i in range(len(self.list_coin_info)):
+            coin_info = self.list_coin_info[i]
+            self.print_msg(f"[SET]{coin_info['name']}/rate:{coin_info['rate']}/krw:{coin_info['krw_avaiable']}/best_k:{coin_info['best_k']}")
+
+        #self.print_msg(list)
 
     def check_available_krw(self, list, isForce=False):
         #보유하고 있는 현금을 기준으로 비율을 정산합니다.
