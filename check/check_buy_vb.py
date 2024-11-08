@@ -10,7 +10,7 @@ def get_current_price(ticker):
     """현재가 조회"""
     return pyupbit.get_orderbook(ticker=ticker)["orderbook_units"][0]["ask_price"]
 
-def check_buy_vb(coin_info, balances, config, print_msg, isForce):
+def check_buy_vb(coin_info, balances, config, print_msg, isForce, isTest):
     coin_name = coin_info['name']
     bestK = coin_info['best_k']
     target_price = get_target_price(coin_name, bestK)

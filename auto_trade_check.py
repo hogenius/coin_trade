@@ -313,7 +313,7 @@ class CoinTrade:
                             checker_module = self.load_module("check", check_name)
                             if checker_module and hasattr(checker_module, check_name):
                                 method = getattr(checker_module, check_name)
-                                if method(coin_info, balances, self.config, self.print_msg, isForce) == True:
+                                if method(coin_info, balances, self.config, self.print_msg, isForce, self.is_test) == True:
                                     check_complete_count+=1
                         
                         #매도 체크 조건을 모두 만족했다면 매도처리!            
@@ -336,7 +336,7 @@ class CoinTrade:
                             checker_module = self.load_module("check", check_name)
                             if checker_module and hasattr(checker_module, check_name):
                                 method = getattr(checker_module, check_name)
-                                if method(coin_info, balances, self.config, self.print_msg, isForce) == True:
+                                if method(coin_info, balances, self.config, self.print_msg, isForce, self.is_test) == True:
                                     check_complete_count+=1
 
                         #매수 체크 조건을 모두 만족했다!    

@@ -6,7 +6,7 @@ def get_current_price( ticker):
     return pyupbit.get_orderbook(ticker=ticker)["orderbook_units"][0]["ask_price"]
        
 #환율 기준으로 체크한다.
-def check_buy_exchange_rate(coin_info, balances, config, print_msg, isForce):
+def check_buy_exchange_rate(coin_info, balances, config, print_msg, isForce, isTest):
     coin_name = coin_info['name']
     rate_usd = ExchangeRater.Instance().GetUSD()
     current_price = get_current_price(coin_name)

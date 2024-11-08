@@ -17,7 +17,7 @@ def get_revenue_rate( balances, ticker):
     return revenue_rate
        
 #손해비율 조건 상태인지 체크한다.
-def check_sell_loss(coin_info, balances, config, print_msg, isForce):
+def check_sell_loss(coin_info, balances, config, print_msg, isForce, isTest):
     coin_name = coin_info['name']
     rate_stop_loss = coin_info['rate_stop_loss']
     result = False
