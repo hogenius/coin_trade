@@ -1,8 +1,8 @@
-pyupbit
-pyyaml
-backtesting
-python-telegram-bot
-asyncio
-schedule
-yfinance
+pyupbit==0.2.34
+pyyaml==6.0.2
+backtesting==0.3.3
+python-telegram-bot==21.7
+asyncio==3.4.3
+schedule=1.2.2
+yfinance==0.2.48
 bokeh==2.4.3
