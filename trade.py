@@ -2,7 +2,7 @@ import asyncio
 import pyupbit
 from config import ConfigInfo
 from test import test_class
-from auto_trade_vb_ma_multi_class import CoinTrade
+from auto_trade_check import CoinTrade
 from msg_telegram import Messaging
 from check_ticker import CheckTicker
 
