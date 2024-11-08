@@ -25,7 +25,7 @@ def check_sell_profit(coin_info, balances, config, print_msg, isForce, isTest):
         #매수한 상태이니 이제 수익률을 계산합니다.
         revenue_rate = get_revenue_rate(balances, coin_name)
         result = rate_profit <= revenue_rate  
-    print_msg(f"{coin_name} - check sell: rate_profit({rate_profit}) <= revenue_rate({revenue_rate}) = {result}", isForce)
+        print_msg(f"{coin_name} - check sell: rate_profit({rate_profit}) <= revenue_rate({revenue_rate}) = {result}", isForce)
     return result
 
     
