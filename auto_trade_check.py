@@ -325,8 +325,8 @@ class CoinTrade:
                                 if method(coin_info, balances, self.config, self.print_msg, isForce, self.is_test) == True:
                                     check_complete_count+=1
                         
-                        #매도 체크 조건을 모두 만족했다면 매도처리!            
-                        if(len(list_check) <= check_complete_count):
+                        #매도 체크 조건은 하나만 만족한다면 매도처리!            
+                        if(0 < check_complete_count):
                             module_name = "trade_sell"
                             module = self.load_module("trade", module_name)
                             if module and hasattr(module, module_name):
