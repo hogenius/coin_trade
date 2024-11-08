@@ -1,3 +1,6 @@
 ﻿__pycache__
 *.pyc
 *_ignore.yaml
+*.db
+*.log
+*.log.*
