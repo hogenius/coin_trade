@@ -160,7 +160,6 @@ class CoinTrade:
                 'check_buy':data['check_buy'],
                 'check_buy_count':data['check_buy_count'],
                 'check_buy_count_origin':data['check_buy_count'],
-                'is_sell_routine':data['is_sell_routine'],
                 'is_repeat_buy_routine':data['is_repeat_buy_routine'],
                 })
         self.check_available_krw(list)
