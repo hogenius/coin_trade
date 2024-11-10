@@ -8,6 +8,7 @@
 
 """
 import asyncio
+from enum import Enum
 import os
 import pyupbit
 import datetime
@@ -23,6 +24,10 @@ from event import EventManager
 from simple_common.simpledata import SimpleData
 from simple_common.simpledata import TableType
 from simple_common.Logging import SimpleLogger
+
+class TypeCondition(Enum):
+    Required = "Required"   #필수 조건
+    Optional = "Optional"   #추가 조건
 
 class CoinTrade:
 
@@ -316,8 +321,8 @@ class CoinTrade:
                         check_complete_count = 0
                         list_check = coin_info['check_sell']
                         for j in range(len(list_check)):
-                            check_name = list_check[j]
-
+                            check_name = list_check[j]["module"]
+                            condition = TypeCondition(list_check[j]["condition"])
                             checker_module = self.load_module("check", check_name)
                             if checker_module and hasattr(checker_module, check_name):
                                 method = getattr(checker_module, check_name)
@@ -339,8 +344,8 @@ class CoinTrade:
                         check_complete_count = 0
                         list_check = coin_info['check_buy']
                         for j in range(len(list_check)):
-                            check_name = list_check[j]
-
+                            check_name = list_check[j]["module"]
+                            condition = TypeCondition(list_check[j]["condition"])
                             checker_module = self.load_module("check", check_name)
                             if checker_module and hasattr(checker_module, check_name):
                                 method = getattr(checker_module, check_name)
@@ -371,8 +376,8 @@ class CoinTrade:
                             coin_info['check_buy_count'] = coin_info['check_buy_count_origin']
                             self.print_msg(f"[CHECK RESET] {coin_info['name']}")
 
-            if 0 < count_re_process or 0 < count_sell_process or 0 < count_buy_process:
-                self.check_available_krw(self.list_coin_info, isForce)
+            #if 0 < count_re_process or 0 < count_sell_process or 0 < count_buy_process:
+            self.check_available_krw(self.list_coin_info, isForce)
         except Exception as e:
             print(e)
             self.print_msg(f"[ERROR] {e}")
