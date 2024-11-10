@@ -19,7 +19,7 @@ list_coin:
         condition : "Required"
     check_buy_count: 10
     check_sell:
-      - module : "check_sell_time"
+      - module : "check_sell_time_ma20"
         condition : "Required"
       - module : "check_sell_profit"
         condition : "Required"
@@ -37,7 +37,7 @@ list_coin:
         condition : "Required"
     check_buy_count: 10
     check_sell:
-      - module : "check_sell_time"
+      - module : "check_sell_time_ma20"
         condition : "Required"
       - module : "check_sell_profit"
         condition : "Required"
@@ -67,7 +67,7 @@ list_coin:
         condition : "Required"
     check_buy_count: 10
     check_sell:
-      - module : "check_sell_time"
+      - module : "check_sell_time_ma20"
         condition : "Required"
       - module : "check_sell_profit"
         condition : "Required"
@@ -85,7 +85,7 @@ list_coin:
         condition : "Required"
     check_buy_count: 10
     check_sell:
-      - module : "check_sell_time"
+      - module : "check_sell_time_ma20"
         condition : "Required"
       - module : "check_sell_profit"
         condition : "Required"
@@ -103,7 +103,7 @@ list_coin:
         condition : "Required"
     check_buy_count: 10
     check_sell:
-      - module : "check_sell_time"
+      - module : "check_sell_time_ma20"
         condition : "Required"
       - module : "check_sell_profit"
         condition : "Required"
@@ -121,7 +121,7 @@ list_coin:
         condition : "Required"
     check_buy_count: 10
     check_sell:
-      - module : "check_sell_time"
+      - module : "check_sell_time_ma20"
         condition : "Required"
       - module : "check_sell_profit"
         condition : "Required"
@@ -139,7 +139,7 @@ list_coin:
         condition : "Required"
     check_buy_count: 10
     check_sell:
-      - module : "check_sell_time"
+      - module : "check_sell_time_ma20"
         condition : "Required"
       - module : "check_sell_profit"
         condition : "Required"
