@@ -169,6 +169,7 @@ class CoinTrade:
                 })
         self.check_available_krw(list)
         self.print_msg("make_coin_list")
+        #self.print_msg(list)
         for i in range(len(self.list_coin_info)):
             coin_info = self.list_coin_info[i]
             self.print_msg(f"[SET]{coin_info['name']}/rate:{coin_info['rate']}/krw:{coin_info['krw_avaiable']}/best_k:{coin_info['best_k']}")
@@ -183,6 +184,24 @@ class CoinTrade:
         #이미 보유하고 있는 코인이면 구매한것으로 간주합니다.
         balances = self.upbit.get_balances()
         #print(f"check_available_krw : {balances}")
+
+        for i in range(len(list)):
+            if list[i]['is_buy'] == False:
+                continue
+
+            is_find = False
+            for b in balances:
+                if b['currency'] == list[i]['name'].replace('KRW-', ''):
+                    is_find = True
+                    break
+
+            if is_find == False:
+                #메모리상 is_buy true로 되어있데 ,balance에는 존재하지 않는 경우.?
+                #이거는 외부에서 매도를 한것으로 간주해야합니다.
+                #list[i]['is_sell'] = True 처리해야합니다.
+                list[i]['is_sell'] = True
+
+
         for b in balances:
 
             if b['currency'] == "KRW" and (b['balance'] is not None) :
@@ -203,9 +222,16 @@ class CoinTrade:
 
         self.print_msg(f"check_available_krw krw_total: {krw_total}", isForce)
         rate_total = 0
-        for i in range(len(list)):    
-            if list[i]['is_buy'] == True:
+        for i in range(len(list)):
+
+            # if self.is_test and list[i]['name'] == "KRW-BTC":
+            #     list[i]['is_buy'] = True
+            #     list[i]['is_sell'] = True
+                
+            #매수를 했지만 아직 매도를 하지 않은 코인은 비율 계산에서 제외합니다.    
+            if list[i]['is_buy'] == True and list[i]['is_sell'] == False:
                 continue
+
             rate_total += list[i]['rate']
 
         for i in range(len(list)):    
