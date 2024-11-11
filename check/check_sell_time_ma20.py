@@ -78,6 +78,7 @@ def check_sell_time_ma20(coin_info, balances, config, print_msg, isForce, isTest
             average_slope = check_sell_ma_process(coin_info['name'], 20, isTest)
             if 0 < average_slope:
                 #그런데 MA20 평균 기울기는 양수라면? 팔지말고 좀더 지켜보자.
+                print_msg(f"[SELL_MA20] {coin_name} revenue_rate:{revenue_rate}이지만, MA20 기울기가 양수({average_slope})이므로 매도하지 않습니다.", isForce)
                 is_sell_time = False
 
     return is_sell_time
