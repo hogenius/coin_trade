@@ -72,6 +72,13 @@ class CoinTrade:
         self.print_msg("set normal mode coin list")
         self.print_msg(self.list_coin_info)
 
+    def SetAttackMode(self):
+        for i in range(len(self.list_coin_info)):
+            self.list_coin_info[i]['rate_profit'] = 0.0
+            self.list_coin_info[i]['check_buy_count'] = 0
+        self.print_msg("set attack mode coin list")
+        self.print_msg(self.list_coin_info)
+
     def ReloadConfing(self):
         self.config.ReloadAll()
 
