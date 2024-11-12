@@ -3,7 +3,7 @@ ma_line_1: 2
 ma_line_2: 7
 ma_line_3: 50
 ma_check_sec: 10
-db_path: "C:/Users/hogen/coin_trade/simple_msg.db"
+db_path: "../simple_msg.db"
 polling_sec: 1
 loop_sec: 60
 loop_check_sec: 180
