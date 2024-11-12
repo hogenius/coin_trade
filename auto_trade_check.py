@@ -61,6 +61,7 @@ class CoinTrade:
         for i in range(len(self.list_coin_info)):
             if self.list_coin_info[i]['rate_profit'] < 1.0:
                 self.list_coin_info[i]['rate_profit'] = 1.0
+            self.list_coin_info[i]['is_check_buy_count'] = True
             self.list_coin_info[i]['check_buy_count'] = self.list_coin_info[i]['check_buy_count_origin'] * 2
         self.print_msg("set safe mode coin list")
         self.print_msg(self.list_coin_info)
@@ -68,6 +69,7 @@ class CoinTrade:
     def SetNormalMode(self):
         for i in range(len(self.list_coin_info)):
             self.list_coin_info[i]['rate_profit'] = self.list_coin_info[i]['rate_profit_origin']
+            self.list_coin_info[i]['is_check_buy_count'] = True
             self.list_coin_info[i]['check_buy_count'] = self.list_coin_info[i]['check_buy_count_origin']
         self.print_msg("set normal mode coin list")
         self.print_msg(self.list_coin_info)
@@ -76,6 +78,7 @@ class CoinTrade:
         for i in range(len(self.list_coin_info)):
             self.list_coin_info[i]['rate_profit'] = 0.0
             self.list_coin_info[i]['check_buy_count'] = 0
+            self.list_coin_info[i]['is_check_buy_count'] = False
         self.print_msg("set attack mode coin list")
         self.print_msg(self.list_coin_info)
 
@@ -172,6 +175,7 @@ class CoinTrade:
                 'check_buy':data['check_buy'],
                 'check_buy_count':data['check_buy_count'],
                 'check_buy_count_origin':data['check_buy_count'],
+                'is_check_buy_count':data['is_check_buy_count'],
                 'is_repeat_buy_routine':data['is_repeat_buy_routine'],
                 })
         self.check_available_krw(list)
@@ -386,26 +390,37 @@ class CoinTrade:
                                     check_complete_count+=1
 
                         #매수 체크 조건을 모두 만족했다!    
-                        check_count = coin_info['check_buy_count']
+                        is_check_buy_count = coin_info['is_check_buy_count']
+                        check_buy_count = coin_info['check_buy_count']
                         if(len(list_check) <= check_complete_count):
-                            
-                            #매수 카운팅을 체크합니다.
-                            if check_count <= 0:
-                                #매수합니다.
+                            #매수 체크 조건을 모두 만족했다!
+
+                            if is_check_buy_count:
+
+                                #매수 카운팅을 체크합니다.
+                                if check_buy_count <= 0:
+                                    #매수합니다.
+                                    module_name = "trade_buy"
+                                    module = self.load_module("trade", module_name)
+                                    if module and hasattr(module, module_name):
+                                        method = getattr(module, module_name)
+                                        method(self.upbit, coin_info, balances, self.config, self.print_msg, isForce, self.is_test)
+                                        count_buy_process+=1
+                                else:
+                                    #체크완료 카운트를 하나 뺍니다.
+                                    set_check_count = check_buy_count - 1
+                                    coin_info['check_buy_count'] = set_check_count
+                                    self.print_msg(f"[CHECK BUY] {coin_info['name']}.  remain check count:{set_check_count}")
+
+                            else:
                                 module_name = "trade_buy"
                                 module = self.load_module("trade", module_name)
                                 if module and hasattr(module, module_name):
                                     method = getattr(module, module_name)
                                     method(self.upbit, coin_info, balances, self.config, self.print_msg, isForce, self.is_test)
-                                    count_buy_process+=1
-                            else:
-                                #체크완료 카운트를 하나 뺍니다.
-                                set_check_count = check_count - 1
-                                coin_info['check_buy_count'] = set_check_count
-                                self.print_msg(f"[CHECK BUY] {coin_info['name']}.  remain check count:{set_check_count}")
 
                         #매수 체크 조건을 불만족했다면 check_buy_count 초기화.
-                        elif check_count != coin_info['check_buy_count_origin']:
+                        elif is_check_buy_count and check_buy_count != coin_info['check_buy_count_origin']:
                             coin_info['check_buy_count'] = coin_info['check_buy_count_origin']
                             self.print_msg(f"[CHECK RESET] {coin_info['name']}")
 
