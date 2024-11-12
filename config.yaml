@@ -10,139 +10,139 @@ loop_check_sec: 180
 list_coin:
   - name: "KRW-BTC"
     rate: 1000
-    rate_profit: 3.0
+    rate_profit: 0.0
     rate_stop_loss: 0.0
     check_buy:
-      - module : "check_buy_ma"
-        condition : "Required"
-      - module : "check_buy_vb"
-        condition : "Required"
+      - module: "check_buy_ma"
+        condition: "Required"
+      - module: "check_buy_vb"
+        condition: "Required"
     check_buy_count: 10
     check_sell:
-      - module : "check_sell_time_ma20"
-        condition : "Required"
-      - module : "check_sell_profit"
-        condition : "Required"
-      - module : "check_sell_loss"
-        condition : "Required"
+      - module: "check_sell_time_ma20"
+        condition: "Required"
+      - module: "check_sell_profit"
+        condition: "Required"
+      - module: "check_sell_loss"
+        condition: "Required"
     is_repeat_buy_routine: false
   - name: "KRW-ETH"
     rate: 1000
-    rate_profit: 3.0
+    rate_profit: 0.0
     rate_stop_loss: 0.0
     check_buy:
-      - module : "check_buy_ma"
-        condition : "Required"
-      - module : "check_buy_vb"
-        condition : "Required"
+      - module: "check_buy_ma"
+        condition: "Required"
+      - module: "check_buy_vb"
+        condition: "Required"
     check_buy_count: 10
     check_sell:
-      - module : "check_sell_time_ma20"
-        condition : "Required"
-      - module : "check_sell_profit"
-        condition : "Required"
-      - module : "check_sell_loss"
-        condition : "Required"
+      - module: "check_sell_time_ma20"
+        condition: "Required"
+      - module: "check_sell_profit"
+        condition: "Required"
+      - module: "check_sell_loss"
+        condition: "Required"
     is_repeat_buy_routine: false
   - name: "KRW-USDT"
     rate: 2000
-    rate_profit: 2.0
+    rate_profit: 0.0
     rate_stop_loss: 0.0
     check_buy:
-      - module : "check_buy_exchange_rate"
-        condition : "Required"
+      - module: "check_buy_exchange_rate"
+        condition: "Required"
     check_buy_count: 0
     check_sell:
-      - module : "check_sell_profit"
-        condition : "Required"
+      - module: "check_sell_profit"
+        condition: "Required"
     is_repeat_buy_routine: true
   - name: "KRW-SOL"
     rate: 1000
-    rate_profit: 3.0
+    rate_profit: 0.0
     rate_stop_loss: 0.0
     check_buy:
-      - module : "check_buy_ma"
-        condition : "Required"
-      - module : "check_buy_vb"
-        condition : "Required"
+      - module: "check_buy_ma"
+        condition: "Required"
+      - module: "check_buy_vb"
+        condition: "Required"
     check_buy_count: 10
     check_sell:
-      - module : "check_sell_time_ma20"
-        condition : "Required"
-      - module : "check_sell_profit"
-        condition : "Required"
-      - module : "check_sell_loss"
-        condition : "Required"
+      - module: "check_sell_time_ma20"
+        condition: "Required"
+      - module: "check_sell_profit"
+        condition: "Required"
+      - module: "check_sell_loss"
+        condition: "Required"
+    is_repeat_buy_routine: false
+  - name: "KRW-DOGE"
+    rate: 1000
+    rate_profit: 0.0
+    rate_stop_loss: 0.0
+    check_buy:
+      - module: "check_buy_ma"
+        condition: "Required"
+      - module: "check_buy_vb"
+        condition: "Required"
+    check_buy_count: 10
+    check_sell:
+      - module: "check_sell_time_ma20"
+        condition: "Required"
+      - module: "check_sell_profit"
+        condition: "Required"
+      - module: "check_sell_loss"
+        condition: "Required"
     is_repeat_buy_routine: false
   - name: "KRW-XRP"
     rate: 1000
-    rate_profit: 3.0
+    rate_profit: 0.0
     rate_stop_loss: 0.0
     check_buy:
-      - module : "check_buy_ma"
-        condition : "Required"
-      - module : "check_buy_vb"
-        condition : "Required"
+      - module: "check_buy_ma"
+        condition: "Required"
+      - module: "check_buy_vb"
+        condition: "Required"
     check_buy_count: 10
     check_sell:
-      - module : "check_sell_time_ma20"
-        condition : "Required"
-      - module : "check_sell_profit"
-        condition : "Required"
-      - module : "check_sell_loss"
-        condition : "Required"
+      - module: "check_sell_time_ma20"
+        condition: "Required"
+      - module: "check_sell_profit"
+        condition: "Required"
+      - module: "check_sell_loss"
+        condition: "Required"
     is_repeat_buy_routine: false
-  - name: "KRW-TRX"
+  - name: "KRW-ADA"
     rate: 1000
-    rate_profit: 3.0
+    rate_profit: 0.0
     rate_stop_loss: 0.0
     check_buy:
-      - module : "check_buy_ma"
-        condition : "Required"
-      - module : "check_buy_vb"
-        condition : "Required"
+      - module: "check_buy_ma"
+        condition: "Required"
+      - module: "check_buy_vb"
+        condition: "Required"
     check_buy_count: 10
     check_sell:
-      - module : "check_sell_time_ma20"
-        condition : "Required"
-      - module : "check_sell_profit"
-        condition : "Required"
-      - module : "check_sell_loss"
-        condition : "Required"
+      - module: "check_sell_time_ma20"
+        condition: "Required"
+      - module: "check_sell_profit"
+        condition: "Required"
+      - module: "check_sell_loss"
+        condition: "Required"
     is_repeat_buy_routine: false
   - name: "KRW-APT"
     rate: 1000
-    rate_profit: 3.0
+    rate_profit: 0.0
     rate_stop_loss: 0.0
     check_buy:
-      - module : "check_buy_ma"
-        condition : "Required"
-      - module : "check_buy_vb"
-        condition : "Required"
+      - module: "check_buy_ma"
+        condition: "Required"
+      - module: "check_buy_vb"
+        condition: "Required"
     check_buy_count: 10
     check_sell:
-      - module : "check_sell_time_ma20"
-        condition : "Required"
-      - module : "check_sell_profit"
-        condition : "Required"
-      - module : "check_sell_loss"
-        condition : "Required"
-    is_repeat_buy_routine: false
-  - name: "KRW-SUI"
-    rate: 1000
-    rate_profit: 3.0
-    rate_stop_loss: 0.0
-    check_buy:
-      - module : "check_buy_ma"
-        condition : "Required"
-      - module : "check_buy_vb"
-        condition : "Required"
-    check_buy_count: 10
-    check_sell:
-      - module : "check_sell_time_ma20"
-        condition : "Required"
-      - module : "check_sell_profit"
-        condition : "Required"
-      - module : "check_sell_loss"
-        condition : "Required"
+      - module: "check_sell_time_ma20"
+        condition: "Required"
+      - module: "check_sell_profit"
+        condition: "Required"
+      - module: "check_sell_loss"
+        condition: "Required"
     is_repeat_buy_routine: false
