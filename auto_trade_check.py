@@ -332,11 +332,15 @@ class CoinTrade:
                         #시간되면 무조건 매도 조건이 붙어있는경우.
                         list_check = coin_info['check_sell']
                         is_have_check_sell_time = False
-                        for j in range(len(list_check)):
-                            check_name = list_check[j]
-                            if check_name == "check_sell_time":
-                                is_have_check_sell_time = True
-                                break
+                        if 0 < len(list_check):
+                            for j in range(len(list_check)):
+                                check_name = list_check[j]
+                                if check_name == "check_sell_time":
+                                    is_have_check_sell_time = True
+                                    break
+                        else:
+                            self.print_msg(f"[ERROR1] {coin_info['name']}. check_sell list 0")
+
                         if is_have_check_sell_time:
                             now = datetime.datetime.now()
                             end_time_wait = now.replace(hour=9, minute=0, second=0, microsecond=0)
@@ -357,14 +361,17 @@ class CoinTrade:
                         #체크 메서드를 루프로 실행해서 체크한다.
                         check_complete_count = 0
                         list_check = coin_info['check_sell']
-                        for j in range(len(list_check)):
-                            check_name = list_check[j]["module"]
-                            condition = TypeCondition(list_check[j]["condition"])
-                            checker_module = self.load_module("check", check_name)
-                            if checker_module and hasattr(checker_module, check_name):
-                                method = getattr(checker_module, check_name)
-                                if method(coin_info, balances, self.config, self.print_msg, isForce, self.is_test) == True:
-                                    check_complete_count+=1
+                        if 0 < len(list_check):
+                            for j in range(len(list_check)):
+                                check_name = list_check[j]["module"]
+                                condition = TypeCondition(list_check[j]["condition"])
+                                checker_module = self.load_module("check", check_name)
+                                if checker_module and hasattr(checker_module, check_name):
+                                    method = getattr(checker_module, check_name)
+                                    if method(coin_info, balances, self.config, self.print_msg, isForce, self.is_test) == True:
+                                        check_complete_count+=1
+                        else :
+                            self.print_msg(f"[ERROR2] {coin_info['name']}. check_sell list 0")
                         
                         #매도 체크 조건은 하나만 만족한다면 매도처리!            
                         if(0 < check_complete_count):
@@ -380,14 +387,17 @@ class CoinTrade:
                         #체크 메서드를 루프로 실행해서 체크한다.
                         check_complete_count = 0
                         list_check = coin_info['check_buy']
-                        for j in range(len(list_check)):
-                            check_name = list_check[j]["module"]
-                            condition = TypeCondition(list_check[j]["condition"])
-                            checker_module = self.load_module("check", check_name)
-                            if checker_module and hasattr(checker_module, check_name):
-                                method = getattr(checker_module, check_name)
-                                if method(coin_info, balances, self.config, self.print_msg, isForce, self.is_test) == True:
-                                    check_complete_count+=1
+                        if 0 < len(list_check):
+                            for j in range(len(list_check)):
+                                check_name = list_check[j]["module"]
+                                condition = TypeCondition(list_check[j]["condition"])
+                                checker_module = self.load_module("check", check_name)
+                                if checker_module and hasattr(checker_module, check_name):
+                                    method = getattr(checker_module, check_name)
+                                    if method(coin_info, balances, self.config, self.print_msg, isForce, self.is_test) == True:
+                                        check_complete_count+=1
+                        else:
+                            self.print_msg(f"[ERROR3] {coin_info['name']}. check_buy list 0")
 
                         #매수 체크 조건을 모두 만족했다!    
                         is_check_buy_count = coin_info['is_check_buy_count']
