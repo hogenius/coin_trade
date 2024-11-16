@@ -7,6 +7,7 @@
 비율에 따른 선택적 코인 매수 매도
 
 """
+import re
 import asyncio
 from enum import Enum
 import os
@@ -134,20 +135,20 @@ class CoinTrade:
         while True:
             list_check = self.simple_data.load_strings(TableType.Check)
             if self.is_test:
-                print(f"InitPollingRoutine : {list_check}");
+                print(f"InitPollingRoutine : {list_check}")
             for check_name in list_check:
                 method_name = check_name
                 args = []
-                if "/" in check_name:
-                    args_list = check_name.split("/")
+                if "/" in check_name or "_" in check_name:
+                    args_list = re.split(r"[/_]", check_name)
                     method_name, *args = args_list
                     
                 if hasattr(self, method_name):
                     method = getattr(self, method_name)
-                    if asyncio.iscoroutinefunction(method):
-                        await method(*args)
-                    else:
+                    try:
                         method(*args)
+                    except Exception as e:
+                        print(f"Error calling method '{method_name}': {e}")
             
             await asyncio.sleep(ConfigInfo.Instance().polling_sec)
 
