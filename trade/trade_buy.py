@@ -1,3 +1,5 @@
+import datetime
+from simple_common.simpledata import SimpleData
 
 def get_balance(balances, ticker):
     """잔고 조회"""
@@ -9,7 +11,7 @@ def get_balance(balances, ticker):
                 return 0
     return 0
 
-def trade_buy(upbit, coin_info, balances, config, print_msg, isForce, isTest):
+def trade_buy(upbit, coin_info, balances, config, simple_data:SimpleData, print_msg, isForce, isTest):
         
     krw_total = get_balance(balances, "KRW")
     krw = coin_info['krw_avaiable']
@@ -28,9 +30,20 @@ def trade_buy(upbit, coin_info, balances, config, print_msg, isForce, isTest):
         #매수한것으로 표기. 하루에 반복적으로 구매 하지 않습니다.
         #하루가 지나서 전량 매도가 되기전에 사용자 임의로 매도를 할수 있도록 말이죠.
 
+        try:
+            simple_data.insert_common_data(
+            "buy", 
+            None, None, None, None, 
+            buy_krw, None, None, None, 
+            datetime.datetime.now())
+        except Exception as e:
+            print(e)
+            print_msg(f"[ERROR BUY DB] {e}")
+
         coin_info['is_buy'] = True
         coin_info['buy_price'] = buy_krw
 
         #print(f"after buy list_coin_info : {list_coin_info}")
     else:
+        
         print_msg(f"[BUY ERROR] not enough money to buy_market_order {coin_info['name']}. krw:{krw:,.2f}")

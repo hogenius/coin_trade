@@ -33,6 +33,7 @@ class TypeCondition(Enum):
 class CoinTrade:
 
     def __init__(self, name, upbit, isTest):
+        self.last_checked_date = None  # 이전 날짜를 저장할 변수
         self.is_waiting = False
         self.is_pause = False
         self.is_test = isTest
@@ -323,6 +324,15 @@ class CoinTrade:
     def coin_main_loop(self, isForce):
         
         try:
+            current_date = datetime.datetime.now().date()
+            if self.last_checked_date is None or self.last_checked_date != current_date:
+                self.simple_data.delete_common_data(10)
+                self.last_checked_date = current_date
+        except Exception as e:
+            print(e)
+            self.print_msg(f"[ERROR DELETE DB] {e}")
+
+        try:
             if self.is_pause:
                 return
          
@@ -397,7 +407,7 @@ class CoinTrade:
                             module = self.load_module("trade", module_name)
                             if module and hasattr(module, module_name):
                                 method = getattr(module, module_name)
-                                method(self.upbit, coin_info, balances, self.config, self.print_msg, isForce, self.is_test)
+                                method(self.upbit, coin_info, balances, self.config, self.simple_data, self.print_msg, isForce, self.is_test)
                                 count_sell_process+=1
                     else:
                         #매수가 가능한지 체크 프로세스를 실행.
@@ -432,7 +442,7 @@ class CoinTrade:
                                     module = self.load_module("trade", module_name)
                                     if module and hasattr(module, module_name):
                                         method = getattr(module, module_name)
-                                        method(self.upbit, coin_info, balances, self.config, self.print_msg, isForce, self.is_test)
+                                        method(self.upbit, coin_info, balances, self.config, self.simple_data, self.print_msg, isForce, self.is_test)
                                         count_buy_process+=1
                                 else:
                                     #체크완료 카운트를 하나 뺍니다.
@@ -445,7 +455,7 @@ class CoinTrade:
                                 module = self.load_module("trade", module_name)
                                 if module and hasattr(module, module_name):
                                     method = getattr(module, module_name)
-                                    method(self.upbit, coin_info, balances, self.config, self.print_msg, isForce, self.is_test)
+                                    method(self.upbit, coin_info, balances, self.config, self.simple_data, self.print_msg, isForce, self.is_test)
 
                         #매수 체크 조건을 불만족했다면 check_buy_count 초기화.
                         elif is_check_buy_count and check_buy_count != coin_info['check_buy_count_origin']:
