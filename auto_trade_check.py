@@ -91,6 +91,11 @@ class CoinTrade:
     def RefreshCoinList(self):
         self.make_coin_list(self.list_coin_info)
 
+    def ShowStatus(self):
+        for i in range(len(self.list_coin_info)):
+            coin_info = self.list_coin_info[i]
+            self.print_msg(coin_info)
+
     # def BuyCoinList(self):
 
         # if len(listCoin) <= 0:
