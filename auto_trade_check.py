@@ -49,15 +49,15 @@ class CoinTrade:
         # EventManager.Instance().Regist("RESUME", self.SetResume)
         self.logging = SimpleLogger(name="coin_trade", log_file="coin_trade.log")
 
-    def SetResume(self):
+    def SetResume(self, *args):
         self.is_pause = False
         self.print_msg(f"set resume mode. self.is_pause : {self.is_pause}")
 
-    def SetPause(self):
+    def SetPause(self, *args):
         self.is_pause = True
         self.print_msg(f"set pause mode. self.is_pause : {self.is_pause}")
 
-    def SetSafeMode(self):
+    def SetSafeMode(self, *args):
         for i in range(len(self.list_coin_info)):
             if self.list_coin_info[i]['rate_profit'] < 1.0:
                 self.list_coin_info[i]['rate_profit'] = 1.0
@@ -66,7 +66,7 @@ class CoinTrade:
         self.print_msg("set safe mode coin list")
         self.print_msg(self.list_coin_info)
 
-    def SetNormalMode(self):
+    def SetNormalMode(self, *args):
         for i in range(len(self.list_coin_info)):
             self.list_coin_info[i]['rate_profit'] = self.list_coin_info[i]['rate_profit_origin']
             self.list_coin_info[i]['is_check_buy_count'] = True
@@ -74,7 +74,7 @@ class CoinTrade:
         self.print_msg("set normal mode coin list")
         self.print_msg(self.list_coin_info)
 
-    def SetAttackMode(self):
+    def SetAttackMode(self, *args):
         for i in range(len(self.list_coin_info)):
             self.list_coin_info[i]['rate_profit'] = 0.0
             self.list_coin_info[i]['check_buy_count'] = 0
@@ -82,19 +82,22 @@ class CoinTrade:
         self.print_msg("set attack mode coin list")
         self.print_msg(self.list_coin_info)
 
-    def ReloadConfing(self):
+    def ReloadConfing(self, *args):
         self.config.ReloadAll()
 
-    def CheckCoinList(self):
+    def CheckCoinList(self, *args):
         self.coin_main_loop(True)
 
-    def RefreshCoinList(self):
+    def RefreshCoinList(self, *args):
         self.make_coin_list(self.list_coin_info)
 
-    def ShowStatus(self):
+    def ShowStatus(self, *args):
         for i in range(len(self.list_coin_info)):
             coin_info = self.list_coin_info[i]
             self.print_msg(coin_info)
+
+    def cmd(self, *args):
+        self.print_msg(f"cmd - {args}")
 
     # def BuyCoinList(self):
 
@@ -133,9 +136,18 @@ class CoinTrade:
             if self.is_test:
                 print(f"InitPollingRoutine : {list_check}");
             for check_name in list_check:
-                if hasattr(self, check_name):
-                    method = getattr(self, check_name)
-                    method()
+                method_name = check_name
+                args = []
+                if "/" in check_name:
+                    args_list = check_name.split("/")
+                    method_name, *args = args_list
+                    
+                if hasattr(self, method_name):
+                    method = getattr(self, method_name)
+                    if asyncio.iscoroutinefunction(method):
+                        await method(*args)
+                    else:
+                        method(*args)
             
             await asyncio.sleep(ConfigInfo.Instance().polling_sec)
 
