@@ -354,7 +354,7 @@ class CoinTrade:
                         coin_info['krw_avaiable'] = -1
                         coin_info['check_buy_count'] = coin_info['check_buy_count_origin']
                         coin_info['best_k'] = find_best_k.GetBestK(coin_info['name'])
-                        self.print_msg(f"[REPEAT] {coin_info['name']}.", isForce)
+                        self.print_msg(f"[REPEAT] {coin_info['name']}.")
                         count_re_process += 1
                     else:
                         #시간되면 무조건 매도 조건이 붙어있는경우.
@@ -378,7 +378,7 @@ class CoinTrade:
                                 coin_info['krw_avaiable'] = -1
                                 coin_info['check_buy_count'] = coin_info['check_buy_count_origin']
                                 coin_info['best_k'] = find_best_k.GetBestK(coin_info['name'])
-                                self.print_msg(f"[INIT] {coin_info['name']}. best_k:{coin_info['best_k']}", isForce)
+                                self.print_msg(f"[INIT] {coin_info['name']}. best_k:{coin_info['best_k']}")
                                 count_re_process += 1
                         
                 else:
