@@ -363,7 +363,7 @@ class CoinTrade:
                         if 0 < len(list_check):
                             for j in range(len(list_check)):
                                 check_name = list_check[j]
-                                if check_name == "check_sell_time":
+                                if "check_sell_time" in check_name:
                                     is_have_check_sell_time = True
                                     break
                         else:
