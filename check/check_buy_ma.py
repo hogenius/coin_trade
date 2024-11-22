@@ -3,8 +3,14 @@ import pandas
        
 #이동평균선을 구한다.
 def check_buy_ma(coin_info, balances, config, print_msg, isForce, isTest):
+    
     coin_name = coin_info['name']
+    
     df = pyupbit.get_ohlcv(coin_name, count=config.ma_3)
+    if df is None :
+        print_msg(f"check_buy_ma get_ohlcv 일시적 error: {coin_name} / df == None")
+        return False
+    
     df['MA_1'] = df['close'].rolling(config.ma_1).mean()
     df['MA_2'] = df['close'].rolling(config.ma_2).mean()
     #df['MA_3'] = df['close'].rolling(config.ma_3).mean()

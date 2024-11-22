@@ -7,6 +7,8 @@
 비율에 따른 선택적 코인 매수 매도
 
 """
+import time
+import traceback
 import re
 import asyncio
 from enum import Enum
@@ -331,10 +333,20 @@ class CoinTrade:
         except Exception as e:
             print(e)
             self.print_msg(f"[ERROR DELETE DB] {e}")
-
+    
         try:
             if self.is_pause:
                 return
+            
+            now = datetime.datetime.now()
+            start_wait_time = now.replace(hour=7, minute=0, second=0, microsecond=0)
+            end_wait_time = now.replace(hour=9, minute=0, second=0, microsecond=0)
+
+            if start_wait_time <= now <= end_wait_time:
+                self.is_waiting = True
+            elif self.is_waiting == True:
+                self.is_waiting = False
+                self.make_coin_list(self.list_coin_info)
          
             balances = self.upbit.get_balances()
 
@@ -356,30 +368,30 @@ class CoinTrade:
                         coin_info['best_k'] = find_best_k.GetBestK(coin_info['name'])
                         self.print_msg(f"[REPEAT] {coin_info['name']}.")
                         count_re_process += 1
-                    else:
-                        #시간되면 무조건 매도 조건이 붙어있는경우.
-                        list_check = coin_info['check_sell']
-                        is_have_check_sell_time = False
-                        if 0 < len(list_check):
-                            for j in range(len(list_check)):
-                                check_name = list_check[j]
-                                if "check_sell_time" in check_name:
-                                    is_have_check_sell_time = True
-                                    break
-                        else:
-                            self.print_msg(f"[ERROR1] {coin_info['name']}. check_sell list 0")
+                    # else:
+                    #     #시간되면 무조건 매도 조건이 붙어있는경우.
+                    #     list_check = coin_info['check_sell']
+                    #     is_have_check_sell_time = False
+                    #     if 0 < len(list_check):
+                    #         for j in range(len(list_check)):
+                    #             check_name = list_check[j]
+                    #             if "check_sell_time" in check_name:
+                    #                 is_have_check_sell_time = True
+                    #                 break
+                    #     else:
+                    #         self.print_msg(f"[ERROR1] {coin_info['name']}. check_sell list 0")
 
-                        if is_have_check_sell_time:
-                            now = datetime.datetime.now()
-                            end_time_wait = now.replace(hour=9, minute=0, second=0, microsecond=0)
-                            if end_time_wait <= now:
-                                coin_info['is_buy'] = False
-                                coin_info['is_sell'] = False
-                                coin_info['krw_avaiable'] = -1
-                                coin_info['check_buy_count'] = coin_info['check_buy_count_origin']
-                                coin_info['best_k'] = find_best_k.GetBestK(coin_info['name'])
-                                self.print_msg(f"[INIT] {coin_info['name']}. best_k:{coin_info['best_k']}")
-                                count_re_process += 1
+                    #     if is_have_check_sell_time:
+                    #         now = datetime.datetime.now()
+                    #         end_time_wait = now.replace(hour=9, minute=0, second=0, microsecond=0)
+                    #         if end_time_wait <= now:
+                    #             coin_info['is_buy'] = False
+                    #             coin_info['is_sell'] = False
+                    #             coin_info['krw_avaiable'] = -1
+                    #             coin_info['check_buy_count'] = coin_info['check_buy_count_origin']
+                    #             coin_info['best_k'] = find_best_k.GetBestK(coin_info['name'])
+                    #             self.print_msg(f"[INIT] {coin_info['name']}. best_k:{coin_info['best_k']}")
+                    #             count_re_process += 1
                         
                 else:
                     #매도 혹은 매수 프로세스를 해야합니다.
@@ -465,7 +477,9 @@ class CoinTrade:
             #if 0 < count_re_process or 0 < count_sell_process or 0 < count_buy_process:
             self.check_available_krw(self.list_coin_info, isForce)
         except Exception as e:
-            print(e)
             self.print_msg(f"[ERROR] {e}")
+            # 예외가 발생한 위치와 스택 트레이스를 출력
+            traceback_str = traceback.format_exc()
+            self.print_msg(f"[TRACEBACK]\n{traceback_str}")
 
             

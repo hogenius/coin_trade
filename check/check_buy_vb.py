@@ -13,7 +13,14 @@ def get_current_price(ticker):
 def check_buy_vb(coin_info, balances, config, print_msg, isForce, isTest):
     coin_name = coin_info['name']
     bestK = coin_info['best_k']
-    target_price = get_target_price(coin_name, bestK)
+
+    df = pyupbit.get_ohlcv(coin_name, "day", 2)
+    if df is None:
+        print_msg(f"check_buy_vb get_ohlcv 일시적 error: {coin_name} / df == None")
+        return False
+    
+    target_price = df.iloc[0]['close'] + (df.iloc[0]['high'] - df.iloc[0]['low']) * bestK
+    #target_price = get_target_price(coin_name, bestK)
     current_price = get_current_price(coin_name)
 
     is_over_target_price = target_price < current_price
