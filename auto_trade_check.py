@@ -248,6 +248,37 @@ class CoinTrade:
 
             self.simple_data.add_string(TableType.Msg, message)
 
+    def get_coin_history_today(self, type):
+        list_today_history = self.simple_data.get_common_data(type, datetime.datetime.now())
+        if 0 < len(list_today_history):
+            return self.convert_records_to_dict(list_today_history)
+        else:
+            return None
+
+    # 데이터 변환 함수
+    def convert_records_to_dict(self, records):
+        keys = ["id", "type", "value1", "value2", "value3", "value4", "num1", "num2", "num3", "num4", "date"]
+        
+        dict_list = []
+        for record in records:
+            record_dict = dict(zip(keys, record))
+            # timestamp를 문자열에서 datetime.date로 변환
+            record_dict["date"] = datetime.strptime(record_dict["date"], "%Y-%m-%d %H:%M:%S").date()
+            dict_list.append(record_dict)
+        
+        return dict_list
+
+    def get_coin_info(self, ticker, list):
+        
+        if ticker is None:
+            return None
+        
+        for i in range(len(list)):
+            coin_info = list[i]
+            if coin_info["name"] == ticker:
+                return coin_info
+        return None
+
     def make_coin_list(self, list):
 
         list.clear()
@@ -271,11 +302,28 @@ class CoinTrade:
                 'is_check_buy_count':data['is_check_buy_count'],
                 'is_repeat_buy_routine':data['is_repeat_buy_routine'],
                 })
+            
+        list_today_history = self.get_coin_history_today("buy")
+        if list_today_history is not None:
+            for coin_history in list_today_history:
+                coin_name = coin_history.get("value1")
+                coin_info = self.get_coin_info(coin_name)
+                if coin_info is not None:
+                    coin_info['is_buy'] = True
+
+        list_today_history = self.get_coin_history_today("sell")
+        if list_today_history is not None:
+            for coin_history in list_today_history:
+                coin_name = coin_history.get("value1")
+                coin_info = self.get_coin_info(coin_name)
+                if coin_info is not None:
+                    coin_info['is_sell'] = True
+
         self.check_available_krw(list)
         self.print_msg("make_coin_list")
         #self.print_msg(list)
-        for i in range(len(self.list_coin_info)):
-            coin_info = self.list_coin_info[i]
+        for i in range(len(list)):
+            coin_info = list[i]
             self.print_msg(f"[SET]{coin_info['name']}/rate:{coin_info['rate']}/krw:{coin_info['krw_avaiable']}/best_k:{coin_info['best_k']}")
 
         #self.print_msg(list)
