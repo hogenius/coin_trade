@@ -33,7 +33,7 @@ def trade_buy(upbit, coin_info, balances, config, simple_data:SimpleData, print_
         try:
             simple_data.insert_common_data(
             "buy", 
-            None, None, None, None, 
+            coin_info['name'], None, None, None, 
             buy_krw, None, None, None, 
             datetime.datetime.now())
         except Exception as e:
