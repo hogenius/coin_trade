@@ -32,9 +32,15 @@ class TypeCondition(Enum):
     Required = "Required"   #필수 조건
     Optional = "Optional"   #추가 조건
 
+class TypeTradeMode(Enum):
+    Normal  = "NormalMode"      #기본 모드
+    Attack  = "AttackMode"      #공격 모드
+    Safe    = "SafeMode"        #안전 모드
+
 class CoinTrade:
 
     def __init__(self, name, upbit, isTest):
+        self.trade_mode = TypeTradeMode.Normal
         self.last_checked_date = None  # 이전 날짜를 저장할 변수
         self.is_waiting = False
         self.is_pause = False
@@ -62,6 +68,7 @@ class CoinTrade:
         self.print_msg(f"set pause mode. self.is_pause : {self.is_pause}")
 
     def SetSafeMode(self, *args):
+        self.trade_mode = TypeTradeMode.Safe
         for i in range(len(self.list_coin_info)):
             if self.list_coin_info[i]['rate_profit'] < 1.0:
                 self.list_coin_info[i]['rate_profit'] = 1.0
@@ -71,6 +78,7 @@ class CoinTrade:
         self.print_msg(self.list_coin_info)
 
     def SetNormalMode(self, *args):
+        self.trade_mode = TypeTradeMode.Normal
         for i in range(len(self.list_coin_info)):
             self.list_coin_info[i]['rate_profit'] = self.list_coin_info[i]['rate_profit_origin']
             self.list_coin_info[i]['is_check_buy_count'] = True
@@ -79,6 +87,7 @@ class CoinTrade:
         self.print_msg(self.list_coin_info)
 
     def SetAttackMode(self, *args):
+        self.trade_mode = TypeTradeMode.Attack
         for i in range(len(self.list_coin_info)):
             self.list_coin_info[i]['rate_profit'] = 0.0
             self.list_coin_info[i]['check_buy_count'] = 0
@@ -93,6 +102,7 @@ class CoinTrade:
         self.coin_main_loop(True)
 
     def RefreshCoinList(self, *args):
+        self.trade_mode = TypeTradeMode.Normal
         self.make_coin_list(self.list_coin_info)
 
     def ShowStatus(self, *args):
@@ -346,6 +356,7 @@ class CoinTrade:
                 self.is_waiting = True
             elif self.is_waiting == True:
                 self.is_waiting = False
+                self.trade_mode = TypeTradeMode.Normal
                 self.make_coin_list(self.list_coin_info)
          
             balances = self.upbit.get_balances()
@@ -425,12 +436,20 @@ class CoinTrade:
                         #매수가 가능한지 체크 프로세스를 실행.
 
                         #체크 메서드를 루프로 실행해서 체크한다.
+                        check_list_count = 0
                         check_complete_count = 0
                         list_check = coin_info['check_buy']
                         if 0 < len(list_check):
                             for j in range(len(list_check)):
                                 check_name = list_check[j]["module"]
                                 condition = TypeCondition(list_check[j]["condition"])
+
+                                #공격모드일때는 Optional조건은 체크하지 하지 않습니다.
+                                if self.trade_mode == TypeTradeMode.Attack:
+                                    if condition == TypeCondition.Optional:
+                                        continue
+                                    
+                                check_list_count+=1
                                 checker_module = self.load_module("check", check_name)
                                 if checker_module and hasattr(checker_module, check_name):
                                     method = getattr(checker_module, check_name)
@@ -442,7 +461,7 @@ class CoinTrade:
                         #매수 체크 조건을 모두 만족했다!    
                         is_check_buy_count = coin_info['is_check_buy_count']
                         check_buy_count = coin_info['check_buy_count']
-                        if(len(list_check) <= check_complete_count):
+                        if(0 < check_list_count and check_list_count <= check_complete_count):
                             #매수 체크 조건을 모두 만족했다!
 
                             if is_check_buy_count:

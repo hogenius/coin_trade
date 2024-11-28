@@ -17,7 +17,7 @@ list_coin:
     check_buy_count: 10
     check_buy:
       - module: "check_buy_ma"
-        condition: "Required"
+        condition: "Optional"
       - module: "check_buy_vb"
         condition: "Required"
     check_sell:
@@ -36,7 +36,7 @@ list_coin:
     check_buy_count: 10
     check_buy:
       - module: "check_buy_ma"
-        condition: "Required"
+        condition: "Optional"
       - module: "check_buy_vb"
         condition: "Required"
     check_sell:
@@ -68,7 +68,7 @@ list_coin:
     check_buy_count: 10
     check_buy:
       - module: "check_buy_ma"
-        condition: "Required"
+        condition: "Optional"
       - module: "check_buy_vb"
         condition: "Required"
     check_sell:
@@ -87,7 +87,7 @@ list_coin:
     check_buy_count: 10
     check_buy:
       - module: "check_buy_ma"
-        condition: "Required"
+        condition: "Optional"
       - module: "check_buy_vb"
         condition: "Required"
     check_sell:
@@ -106,7 +106,7 @@ list_coin:
     check_buy_count: 10
     check_buy:
       - module: "check_buy_ma"
-        condition: "Required"
+        condition: "Optional"
       - module: "check_buy_vb"
         condition: "Required"
     check_sell:
@@ -125,7 +125,7 @@ list_coin:
     check_buy_count: 10
     check_buy:
       - module: "check_buy_ma"
-        condition: "Required"
+        condition: "Optional"
       - module: "check_buy_vb"
         condition: "Required"
     check_sell:
@@ -144,7 +144,7 @@ list_coin:
     check_buy_count: 10
     check_buy:
       - module: "check_buy_ma"
-        condition: "Required"
+        condition: "Optional"
       - module: "check_buy_vb"
         condition: "Required"
     check_sell:
