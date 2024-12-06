@@ -112,6 +112,68 @@ class CoinTrade:
 
     def cmd(self, *args):
         self.print_msg(f"cmd - {args}")
+        args_length = len(args)
+
+        if args_length == 1:
+            cmd = args[0].lower()
+            if cmd == "buyall":
+                self.cmd_buy("", True)
+            elif cmd == "sellall":
+                self.cmd_sell("", True)
+        
+        elif args_length == 2:
+            cmd = args[0].lower()
+            if cmd == "buy":
+                ticker_name = args[1].lower()
+                self.cmd_buy(ticker_name, False)
+            elif cmd == "sell":
+                ticker_name = args[1].lower()
+                self.cmd_sell(ticker_name, False)
+            elif cmd == "check":
+                ticker_name = args[1].lower()
+                self.cmd_check(ticker_name)
+
+    def cmd_buy(self, ticker_name, isAll):
+        try:
+            balances = self.upbit.get_balances()
+            for i in range(len(self.list_coin_info)):
+                coin_info = self.list_coin_info[i]
+                coin_name_lower = coin_info['name'].replace('KRW-', '').lower()
+                if(isAll or coin_name_lower == ticker_name):
+                    if coin_info['is_buy'] == False:
+                        self.coin_trade_process("trade_buy", coin_info, balances, True)
+                        
+        except Exception as e:
+            print(e)
+            self.print_msg(f"[ERROR cmd_buy] {e}")
+
+    def cmd_sell(self, ticker_name, isAll):
+        try:
+            balances = self.upbit.get_balances()
+            for i in range(len(self.list_coin_info)):
+                coin_info = self.list_coin_info[i]
+                coin_name_lower = coin_info['name'].replace('KRW-', '').lower()
+                if(isAll or coin_name_lower == ticker_name):
+                    if coin_info['is_buy'] == True and coin_info['is_sell'] == False:
+                        self.coin_trade_process("trade_sell", coin_info, balances, True)
+
+        except Exception as e:
+            print(e)
+            self.print_msg(f"[ERROR cmd_sell] {e}")
+    
+    def cmd_check(self, ticker_name):
+        try:
+            balances = self.upbit.get_balances()
+            for i in range(len(self.list_coin_info)):
+                coin_info = self.list_coin_info[i]
+                coin_name_lower = coin_info['name'].replace('KRW-', '').lower()
+                if(coin_name_lower == ticker_name):
+                    self.coin_main_check(coin_info, balances, True)
+                    break
+
+        except Exception as e:
+            print(e)
+            self.print_msg(f"[ERROR cmd_check] {e}")
 
     # def BuyCoinList(self):
 
@@ -333,6 +395,15 @@ class CoinTrade:
             self.print_msg(f"모듈 로드 중 오류 발생: {e}")
             return None
     
+    def coin_trade_process(self, module_name, coin_info, balances, isForce):
+        module = self.load_module("trade", module_name)
+        if module and hasattr(module, module_name):
+            method = getattr(module, module_name)
+            method(self.upbit, coin_info, balances, self.config, self.simple_data, self.print_msg, isForce, self.is_test)
+            return True
+        else:
+            return False
+
     def coin_main_loop(self, isForce):
         
         try:
@@ -361,137 +432,13 @@ class CoinTrade:
          
             balances = self.upbit.get_balances()
 
-            count_re_process = 0
-            count_sell_process = 0
-            count_buy_process = 0
+            # count_re_process = 0
+            # count_sell_process = 0
+            # count_buy_process = 0
 
             for i in range(len(self.list_coin_info)):
                 coin_info = self.list_coin_info[i]
-                if coin_info['is_sell'] == True:
-                    #한번 매수했다가 매도까지 했었습니다.
-
-                    if coin_info['is_repeat_buy_routine'] == True:
-                        #다시 매수 프로세스를 활성화하는 옵션이라면 초기화.
-                        coin_info['is_buy'] = False
-                        coin_info['is_sell'] = False
-                        coin_info['krw_avaiable'] = -1
-                        coin_info['check_buy_count'] = coin_info['check_buy_count_origin']
-                        coin_info['best_k'] = find_best_k.GetBestK(coin_info['name'])
-                        self.print_msg(f"[REPEAT] {coin_info['name']}.")
-                        count_re_process += 1
-                    # else:
-                    #     #시간되면 무조건 매도 조건이 붙어있는경우.
-                    #     list_check = coin_info['check_sell']
-                    #     is_have_check_sell_time = False
-                    #     if 0 < len(list_check):
-                    #         for j in range(len(list_check)):
-                    #             check_name = list_check[j]
-                    #             if "check_sell_time" in check_name:
-                    #                 is_have_check_sell_time = True
-                    #                 break
-                    #     else:
-                    #         self.print_msg(f"[ERROR1] {coin_info['name']}. check_sell list 0")
-
-                    #     if is_have_check_sell_time:
-                    #         now = datetime.datetime.now()
-                    #         end_time_wait = now.replace(hour=9, minute=0, second=0, microsecond=0)
-                    #         if end_time_wait <= now:
-                    #             coin_info['is_buy'] = False
-                    #             coin_info['is_sell'] = False
-                    #             coin_info['krw_avaiable'] = -1
-                    #             coin_info['check_buy_count'] = coin_info['check_buy_count_origin']
-                    #             coin_info['best_k'] = find_best_k.GetBestK(coin_info['name'])
-                    #             self.print_msg(f"[INIT] {coin_info['name']}. best_k:{coin_info['best_k']}")
-                    #             count_re_process += 1
-                        
-                else:
-                    #매도 혹은 매수 프로세스를 해야합니다.
-                    if coin_info['is_buy'] == True:
-                        #매수를 했었다면 매도 체크 프로세스를 실행.
-
-                        #체크 메서드를 루프로 실행해서 체크한다.
-                        check_complete_count = 0
-                        list_check = coin_info['check_sell']
-                        if 0 < len(list_check):
-                            for j in range(len(list_check)):
-                                check_name = list_check[j]["module"]
-                                condition = TypeCondition(list_check[j]["condition"])
-                                checker_module = self.load_module("check", check_name)
-                                if checker_module and hasattr(checker_module, check_name):
-                                    method = getattr(checker_module, check_name)
-                                    if method(coin_info, balances, self.config, self.print_msg, isForce, self.is_test) == True:
-                                        check_complete_count+=1
-                        else :
-                            self.print_msg(f"[ERROR2] {coin_info['name']}. check_sell list 0")
-                        
-                        #매도 체크 조건은 하나만 만족한다면 매도처리!            
-                        if(0 < check_complete_count):
-                            module_name = "trade_sell"
-                            module = self.load_module("trade", module_name)
-                            if module and hasattr(module, module_name):
-                                method = getattr(module, module_name)
-                                method(self.upbit, coin_info, balances, self.config, self.simple_data, self.print_msg, isForce, self.is_test)
-                                count_sell_process+=1
-                    else:
-                        #매수가 가능한지 체크 프로세스를 실행.
-
-                        #체크 메서드를 루프로 실행해서 체크한다.
-                        check_list_count = 0
-                        check_complete_count = 0
-                        list_check = coin_info['check_buy']
-                        if 0 < len(list_check):
-                            for j in range(len(list_check)):
-                                check_name = list_check[j]["module"]
-                                condition = TypeCondition(list_check[j]["condition"])
-
-                                #공격모드일때는 Optional조건은 체크하지 하지 않습니다.
-                                if self.trade_mode == TypeTradeMode.Attack:
-                                    if condition == TypeCondition.Optional:
-                                        continue
-                                    
-                                check_list_count+=1
-                                checker_module = self.load_module("check", check_name)
-                                if checker_module and hasattr(checker_module, check_name):
-                                    method = getattr(checker_module, check_name)
-                                    if method(coin_info, balances, self.config, self.print_msg, isForce, self.is_test) == True:
-                                        check_complete_count+=1
-                        else:
-                            self.print_msg(f"[ERROR3] {coin_info['name']}. check_buy list 0")
-
-                        #매수 체크 조건을 모두 만족했다!    
-                        is_check_buy_count = coin_info['is_check_buy_count']
-                        check_buy_count = coin_info['check_buy_count']
-                        if(0 < check_list_count and check_list_count <= check_complete_count):
-                            #매수 체크 조건을 모두 만족했다!
-
-                            if is_check_buy_count:
-
-                                #매수 카운팅을 체크합니다.
-                                if check_buy_count <= 0:
-                                    #매수합니다.
-                                    module_name = "trade_buy"
-                                    module = self.load_module("trade", module_name)
-                                    if module and hasattr(module, module_name):
-                                        method = getattr(module, module_name)
-                                        method(self.upbit, coin_info, balances, self.config, self.simple_data, self.print_msg, isForce, self.is_test)
-                                        count_buy_process+=1
-                                else:
-                                    #체크완료 카운트를 하나 뺍니다.
-                                    set_check_count = check_buy_count - 1
-                                    coin_info['check_buy_count'] = set_check_count
-                                    self.print_msg(f"[CHECK BUY] {coin_info['name']}.  remain check count:{set_check_count}")
-
-                            else:
-                                module_name = "trade_buy"
-                                module = self.load_module("trade", module_name)
-                                if module and hasattr(module, module_name):
-                                    method = getattr(module, module_name)
-                                    method(self.upbit, coin_info, balances, self.config, self.simple_data, self.print_msg, isForce, self.is_test)
-
-                        #매수 체크 조건을 불만족했다면 check_buy_count 초기화.
-                        elif is_check_buy_count and check_buy_count != coin_info['check_buy_count_origin']:
-                            coin_info['check_buy_count'] = coin_info['check_buy_count_origin']
-                            self.print_msg(f"[CHECK RESET] {coin_info['name']}")
+                self.coin_main_check(coin_info, balances, isForce)
 
             #if 0 < count_re_process or 0 < count_sell_process or 0 < count_buy_process:
             self.check_available_krw(self.list_coin_info, isForce)
@@ -500,5 +447,124 @@ class CoinTrade:
             # 예외가 발생한 위치와 스택 트레이스를 출력
             traceback_str = traceback.format_exc()
             self.print_msg(f"[TRACEBACK]\n{traceback_str}")
+            
+    def coin_main_check(self, coin_info, balances, isForce):
+        
+        if coin_info['is_sell'] == True:
+            #한번 매수했다가 매도까지 했었습니다.
 
+            if coin_info['is_repeat_buy_routine'] == True:
+                #다시 매수 프로세스를 활성화하는 옵션이라면 초기화.
+                coin_info['is_buy'] = False
+                coin_info['is_sell'] = False
+                coin_info['krw_avaiable'] = -1
+                coin_info['check_buy_count'] = coin_info['check_buy_count_origin']
+                coin_info['best_k'] = find_best_k.GetBestK(coin_info['name'])
+                self.print_msg(f"[REPEAT] {coin_info['name']}.")
+                #count_re_process += 1
+            # else:
+            #     #시간되면 무조건 매도 조건이 붙어있는경우.
+            #     list_check = coin_info['check_sell']
+            #     is_have_check_sell_time = False
+            #     if 0 < len(list_check):
+            #         for j in range(len(list_check)):
+            #             check_name = list_check[j]
+            #             if "check_sell_time" in check_name:
+            #                 is_have_check_sell_time = True
+            #                 break
+            #     else:
+            #         self.print_msg(f"[ERROR1] {coin_info['name']}. check_sell list 0")
+
+            #     if is_have_check_sell_time:
+            #         now = datetime.datetime.now()
+            #         end_time_wait = now.replace(hour=9, minute=0, second=0, microsecond=0)
+            #         if end_time_wait <= now:
+            #             coin_info['is_buy'] = False
+            #             coin_info['is_sell'] = False
+            #             coin_info['krw_avaiable'] = -1
+            #             coin_info['check_buy_count'] = coin_info['check_buy_count_origin']
+            #             coin_info['best_k'] = find_best_k.GetBestK(coin_info['name'])
+            #             self.print_msg(f"[INIT] {coin_info['name']}. best_k:{coin_info['best_k']}")
+            #             count_re_process += 1
+                
+        else:
+            #매도 혹은 매수 프로세스를 해야합니다.
+            if coin_info['is_buy'] == True:
+                #매수를 했었다면 매도 체크 프로세스를 실행.
+
+                #체크 메서드를 루프로 실행해서 체크한다.
+                check_complete_count = 0
+                list_check = coin_info['check_sell']
+                if 0 < len(list_check):
+                    for j in range(len(list_check)):
+                        check_name = list_check[j]["module"]
+                        condition = TypeCondition(list_check[j]["condition"])
+                        checker_module = self.load_module("check", check_name)
+                        if checker_module and hasattr(checker_module, check_name):
+                            method = getattr(checker_module, check_name)
+                            if method(coin_info, balances, self.config, self.print_msg, isForce, self.is_test) == True:
+                                check_complete_count+=1
+                else :
+                    self.print_msg(f"[ERROR2] {coin_info['name']}. check_sell list 0")
+                
+                #매도 체크 조건은 하나만 만족한다면 매도처리!            
+                if(0 < check_complete_count):
+                    reseult = self.coin_trade_process("trade_sell", coin_info, balances, isForce)
+                    # if(reseult == True):
+                    #     count_sell_process+=1
+                        
+            else:
+                #매수가 가능한지 체크 프로세스를 실행.
+
+                #체크 메서드를 루프로 실행해서 체크한다.
+                check_list_count = 0
+                check_complete_count = 0
+                list_check = coin_info['check_buy']
+                if 0 < len(list_check):
+                    for j in range(len(list_check)):
+                        check_name = list_check[j]["module"]
+                        condition = TypeCondition(list_check[j]["condition"])
+
+                        #공격모드일때는 Optional조건은 체크하지 하지 않습니다.
+                        if self.trade_mode == TypeTradeMode.Attack:
+                            if condition == TypeCondition.Optional:
+                                continue
+                            
+                        check_list_count+=1
+                        checker_module = self.load_module("check", check_name)
+                        if checker_module and hasattr(checker_module, check_name):
+                            method = getattr(checker_module, check_name)
+                            if method(coin_info, balances, self.config, self.print_msg, isForce, self.is_test) == True:
+                                check_complete_count+=1
+                else:
+                    self.print_msg(f"[ERROR3] {coin_info['name']}. check_buy list 0")
+
+                #매수 체크 조건을 모두 만족했다!    
+                is_check_buy_count = coin_info['is_check_buy_count']
+                check_buy_count = coin_info['check_buy_count']
+                if(0 < check_list_count and check_list_count <= check_complete_count):
+                    #매수 체크 조건을 모두 만족했다!
+
+                    if is_check_buy_count:
+
+                        #매수 카운팅을 체크합니다.
+                        if check_buy_count <= 0:
+                            #매수합니다.
+                            reseult = self.coin_trade_process("trade_buy", coin_info, balances, isForce)
+                            # if(reseult == True):
+                            #     count_buy_process+=1
+                            
+                        else:
+                            #체크완료 카운트를 하나 뺍니다.
+                            set_check_count = check_buy_count - 1
+                            coin_info['check_buy_count'] = set_check_count
+                            self.print_msg(f"[CHECK BUY] {coin_info['name']}.  remain check count:{set_check_count}")
+
+                    else:
+                        result = self.coin_trade_process("trade_buy", coin_info, balances, isForce)
+
+                #매수 체크 조건을 불만족했다면 check_buy_count 초기화.
+                elif is_check_buy_count and check_buy_count != coin_info['check_buy_count_origin']:
+                    coin_info['check_buy_count'] = coin_info['check_buy_count_origin']
+                    self.print_msg(f"[CHECK RESET] {coin_info['name']}")
             
