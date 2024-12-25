@@ -35,7 +35,7 @@ def trade_buy(upbit, coin_info, balances, config, simple_data:SimpleData, print_
             "buy", 
             coin_info['name'], None, None, None, 
             buy_krw, None, None, None, 
-            datetime.datetime.now())
+            datetime.datetime.now(datetime.timezone.utc))
         except Exception as e:
             print(e)
             print_msg(f"[ERROR BUY DB] {e}")

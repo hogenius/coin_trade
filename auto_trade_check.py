@@ -28,6 +28,10 @@ from simple_common.simpledata import SimpleData
 from simple_common.simpledata import TableType
 from simple_common.Logging import SimpleLogger
 
+class TypeTrade(Enum):
+    Sell = "sell"
+    Buy = "buy"
+
 class TypeCondition(Enum):
     Required = "Required"   #필수 조건
     Optional = "Optional"   #추가 조건
@@ -248,8 +252,10 @@ class CoinTrade:
 
             self.simple_data.add_string(TableType.Msg, message)
 
-    def get_coin_history_today(self, type):
-        list_today_history = self.simple_data.get_common_data(type, datetime.datetime.now())
+    def get_coin_history_today(self, type:TypeTrade):
+
+        now = datetime.datetime.now(datetime.timezone.utc)
+        list_today_history = self.simple_data.get_common_data(type.value, now)
         if 0 < len(list_today_history):
             return self.convert_records_to_dict(list_today_history)
         else:
@@ -263,6 +269,7 @@ class CoinTrade:
         for record in records:
             record_dict = dict(zip(keys, record))
             # timestamp를 문자열에서 datetime.date로 변환
+            record_dict["id"] = TypeTrade(record_dict["id"])
             record_dict["date"] = datetime.strptime(record_dict["date"], "%Y-%m-%d %H:%M:%S").date()
             dict_list.append(record_dict)
         
@@ -303,7 +310,7 @@ class CoinTrade:
                 'is_repeat_buy_routine':data['is_repeat_buy_routine'],
                 })
             
-        list_today_history = self.get_coin_history_today("buy")
+        list_today_history = self.get_coin_history_today(TypeTrade.Buy)
         if list_today_history is not None:
             for coin_history in list_today_history:
                 coin_name = coin_history.get("value1")
@@ -311,7 +318,7 @@ class CoinTrade:
                 if coin_info is not None:
                     coin_info['is_buy'] = True
 
-        list_today_history = self.get_coin_history_today("sell")
+        list_today_history = self.get_coin_history_today(TypeTrade.Sell)
         if list_today_history is not None:
             for coin_history in list_today_history:
                 coin_name = coin_history.get("value1")

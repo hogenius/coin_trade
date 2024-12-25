@@ -41,7 +41,7 @@ def trade_sell(upbit, coin_info, balances, config, simple_data:SimpleData, print
             "sell", 
             coin_info['name'], None, None, None, 
             buy_price_krw, sell_krw, None, None, 
-            datetime.datetime.now())
+            datetime.datetime.now(datetime.timezone.utc))
         except Exception as e:
             print(e)
             print_msg(f"[ERROR SELL DB] {e}")
