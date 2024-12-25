@@ -462,7 +462,7 @@ class CoinTrade:
     def coin_main_loop(self, isForce):
         
         try:
-            current_date = datetime.datetime.now().date()
+            current_date = datetime.datetime.now(datetime.timezone.utc).date()
             if self.last_checked_date is None or self.last_checked_date != current_date:
                 self.simple_data.delete_common_data(10)
                 self.last_checked_date = current_date
