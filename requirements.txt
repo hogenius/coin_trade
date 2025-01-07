@@ -7,3 +7,4 @@ asyncio==3.4.3
 schedule==1.2.2
 yfinance==0.2.48
 bokeh==2.4.3
+pomegranate==1.1.1
