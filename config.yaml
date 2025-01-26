@@ -46,6 +46,25 @@ list_coin:
         condition: "Required"
       - module: "check_sell_loss"
         condition: "Required"
+  - name: "KRW-XRP"
+    rate: 1000
+    rate_profit: 3.0
+    rate_stop_loss: 0.0
+    is_repeat_buy_routine: false
+    is_check_buy_count: true
+    check_buy_count: 10
+    check_buy:
+      - module: "check_buy_ma"
+        condition: "Optional"
+      - module: "check_buy_vb"
+        condition: "Required"
+    check_sell:
+      - module: "check_sell_time_ma20"
+        condition: "Required"
+      - module: "check_sell_profit"
+        condition: "Required"
+      - module: "check_sell_loss"
+        condition: "Required"
   - name: "KRW-USDT"
     rate: 2000
     rate_profit: 3.0
@@ -97,25 +116,6 @@ list_coin:
         condition: "Required"
       - module: "check_sell_loss"
         condition: "Required"
-  - name: "KRW-XRP"
-    rate: 1000
-    rate_profit: 3.0
-    rate_stop_loss: 0.0
-    is_repeat_buy_routine: false
-    is_check_buy_count: true
-    check_buy_count: 10
-    check_buy:
-      - module: "check_buy_ma"
-        condition: "Optional"
-      - module: "check_buy_vb"
-        condition: "Required"
-    check_sell:
-      - module: "check_sell_time_ma20"
-        condition: "Required"
-      - module: "check_sell_profit"
-        condition: "Required"
-      - module: "check_sell_loss"
-        condition: "Required"
   - name: "KRW-ADA"
     rate: 1000
     rate_profit: 3.0
@@ -135,7 +135,7 @@ list_coin:
         condition: "Required"
       - module: "check_sell_loss"
         condition: "Required"
-  - name: "KRW-APT"
+  - name: "KRW-TRX"
     rate: 1000
     rate_profit: 3.0
     rate_stop_loss: 0.0
