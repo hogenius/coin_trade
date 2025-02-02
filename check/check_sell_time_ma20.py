@@ -63,7 +63,7 @@ def check_sell_ma_process(coin_name, ma_period, isTest):
         print(f"{coin_name} - 평균 기울기: {average_slope:.5f}")
     return average_slope
 
-def check_sell_time_ma20(coin_info, balances, config, print_msg, isForce, isTest):
+def check_sell_time_ma20(coin_info, balances, config, simple_data, print_msg, isForce, isTest):
     coin_name = coin_info['name']
     now = datetime.datetime.now()
     end_time = now.replace(hour=7, minute=0, second=0, microsecond=0)

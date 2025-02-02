@@ -2,7 +2,7 @@ import pyupbit
 import pandas
        
 #이동평균선을 구한다.
-def check_buy_ma(coin_info, balances, config, print_msg, isForce, isTest):
+def check_buy_ma(coin_info, balances, config, simple_data, print_msg, isForce, isTest):
     
     coin_name = coin_info['name']
     

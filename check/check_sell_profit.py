@@ -17,7 +17,7 @@ def get_revenue_rate( balances, ticker):
     return revenue_rate
 
 #수익비율 조건 상태인지 체크한다.
-def check_sell_profit(coin_info, balances, config, print_msg, isForce, isTest):
+def check_sell_profit(coin_info, balances, config, simple_data, print_msg, isForce, isTest):
     coin_name = coin_info['name']
     rate_profit = coin_info['rate_profit']
     result = False
