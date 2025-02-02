@@ -2,9 +2,20 @@ import pyupbit
 import datetime
 from simple_common.simpledata import SimpleData
 from hmmlearn import hmm
+
+def classify_states(means):
+    """ 각 상태(State)를 변동률과 거래량을 기준으로 분류 """
+    sorted_states = sorted(enumerate(means), key=lambda x: (x[1][0], x[1][1]))  # 변동률 기준 정렬
+
+    stable_state = sorted_states[0][0]  # 변동률이 가장 낮은 상태 (안정적인 시장)
+    normal_state = sorted_states[1][0]  # 중간 변동성을 가진 상태
+    volatile_state = sorted_states[2][0]  # 변동성이 가장 큰 상태 (급등/급락 시장)
+
+    return stable_state, normal_state, volatile_state
        
 def check_buy_hmm(coin_info, balances, config, simple_data:SimpleData, print_msg, isForce, isTest):
     coin_name = coin_info['name']
+    define_days=365 #365일치
 
     # 가장 최근 OHLCV 데이터 확인
     latest_timestamp = simple_data.get_latest_ohlcv_timestamp(coin_name)
@@ -14,7 +25,8 @@ def check_buy_hmm(coin_info, balances, config, simple_data:SimpleData, print_msg
     now = datetime.datetime.utcnow()
     if not latest_timestamp or latest_timestamp < now - datetime.timedelta(minutes=60):
         # 최신 데이터가 현재보다 오래된 경우 추가 데이터 로드
-        start_date = latest_timestamp if latest_timestamp else now - datetime.timedelta(days=2*365)
+        start_date = latest_timestamp if latest_timestamp else now - datetime.timedelta(days=define_days)
+        print(f"load start get_ohlcv_from {start_date}")
         df = pyupbit.get_ohlcv_from(ticker=coin_name, interval="minute60", fromDatetime=start_date)
         
         if df is not None and not df.empty:
@@ -24,10 +36,10 @@ def check_buy_hmm(coin_info, balances, config, simple_data:SimpleData, print_msg
             print_msg(f"⚠ {coin_name} 데이터 가져오기 실패")
 
     # 최근 2년치 데이터 가져오기
-    start_date = now - datetime.timedelta(days=2*365)
+    start_date = now - datetime.timedelta(days=define_days)
     end_date = now
     ohlcv_records = simple_data.get_ohlcv_data(coin_name, start_date, end_date)
-
+    print(f"ohlcv_records {ohlcv_records}")
 
     # 1. 관찰 데이터 준비 (변동률과 거래량)
     observations = ohlcv_records[["price_change", "volume"]].dropna().values  # NaN 제거 후 numpy 배열로 변환
@@ -64,6 +76,24 @@ def check_buy_hmm(coin_info, balances, config, simple_data:SimpleData, print_msg
     for i, prob in enumerate(next_state_probs):
         print(f"State {current_state} -> State {i} 전환 확률: {prob:.2%}")
 
-    return False
+    stable_state, normal_state, volatile_state = classify_states(means)
+
+    # 매수 신호 (안정 상태에서 급등 상태로 전이 확률 높음)
+    buy_signal = current_state == stable_state and next_state_probs[volatile_state] > 0.2
+
+    # 매도 신호 (급등 상태에서 안정 상태로 전이 확률 높음)
+    sell_signal = current_state == volatile_state and next_state_probs[stable_state] > 0.3
+
+    result = False
+    # 매매 신호 결정
+    if buy_signal:
+        print("📈 매수 신호: 상승 가능성 높음!")
+        result = True
+    elif sell_signal:
+        print("📉 매도 신호: 하락 가능성 높음!")
+    else:
+        print("⏸️ 보류: 명확한 매매 신호 없음")
+
+    return result
 
     
