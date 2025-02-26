@@ -346,6 +346,10 @@ class CoinTrade:
         #print(f"check_available_krw : {balances}")
 
         for i in range(len(list)):
+
+            if self.is_coin_active(list[i]) == False:
+                continue
+
             if list[i]['is_buy'] == False:
                 continue
 
@@ -384,6 +388,8 @@ class CoinTrade:
         rate_total = 0
         for i in range(len(list)):
 
+            if self.is_coin_active(list[i]) == False:
+                continue
             # if self.is_test and list[i]['name'] == "KRW-BTC":
             #     list[i]['is_buy'] = True
             #     list[i]['is_sell'] = True
@@ -395,6 +401,9 @@ class CoinTrade:
             rate_total += list[i]['rate']
 
         for i in range(len(list)):    
+
+            if self.is_coin_active(list[i]) == False:
+                continue
 
             if list[i]['rate'] <= 0:
                 continue
@@ -463,13 +472,15 @@ class CoinTrade:
     def is_coin_active(self, coin_info):
         coin_name = coin_info['name']
         is_coin_active = coin_info['active'] == True
-        print(f"is_coin_active : {coin_name} / {is_coin_active}")
+        if self.is_test:
+            print(f"is_coin_active : {coin_name} / {is_coin_active}")
         return is_coin_active
     
     def is_empty(self, coin_info):
         coin_name = coin_info['name']
         is_empty = coin_info['name'] == "EMPTY"
-        print(f"is_coin_empty : {coin_name} / {is_empty}")
+        if self.is_test:
+            print(f"is_coin_empty : {coin_name} / {is_empty}")
         return is_empty
 
     def coin_main_loop(self, isForce):
