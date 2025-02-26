@@ -294,6 +294,7 @@ class CoinTrade:
             data = self.config.list_coin[i]
             list.append({
                 'name':data['name'], 
+                'active':data['active'], 
                 'rate':data['rate'], 
                 'rate_profit':data['rate_profit'], 
                 'rate_profit_origin':data['rate_profit'], 
@@ -458,6 +459,18 @@ class CoinTrade:
             return True
         else:
             return False
+        
+    def is_coin_active(self, coin_info):
+        coin_name = coin_info['name']
+        is_coin_active = coin_info['active'] == True
+        print(f"is_coin_active : {coin_name} / {is_coin_active}")
+        return is_coin_active
+    
+    def is_empty(self, coin_info):
+        coin_name = coin_info['name']
+        is_empty = coin_info['name'] == "EMPTY"
+        print(f"is_coin_empty : {coin_name} / {is_empty}")
+        return is_empty
 
     def coin_main_loop(self, isForce):
         
@@ -493,6 +506,13 @@ class CoinTrade:
 
             for i in range(len(self.list_coin_info)):
                 coin_info = self.list_coin_info[i]
+
+                if self.is_coin_active(coin_info) == False:
+                    continue
+
+                if self.is_empty(coin_info):
+                    continue
+
                 self.coin_main_check(coin_info, balances, isForce)
 
             #if 0 < count_re_process or 0 < count_sell_process or 0 < count_buy_process:

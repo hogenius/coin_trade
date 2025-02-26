@@ -8,7 +8,28 @@ polling_sec: 1
 loop_sec: 60
 loop_check_sec: 180
 list_coin:
+  - name: "EMPTY"
+    active: true
+    rate: 2000
+    rate_profit: 4.0
+    rate_stop_loss: 0.0
+    is_repeat_buy_routine: false
+    is_check_buy_count: true
+    check_buy_count: 10
+    check_buy:
+      - module: "check_buy_ma"
+        condition: "Optional"
+      - module: "check_buy_vb"
+        condition: "Required"
+    check_sell:
+      - module: "check_sell_time_ma20"
+        condition: "Required"
+      - module: "check_sell_profit"
+        condition: "Required"
+      - module: "check_sell_loss"
+        condition: "Required"
   - name: "KRW-BTC"
+    active: false
     rate: 1000
     rate_profit: 4.0
     rate_stop_loss: 0.0
@@ -28,6 +49,7 @@ list_coin:
       - module: "check_sell_loss"
         condition: "Required"
   - name: "KRW-ETH"
+    active: false
     rate: 1000
     rate_profit: 4.0
     rate_stop_loss: 0.0
@@ -47,6 +69,7 @@ list_coin:
       - module: "check_sell_loss"
         condition: "Required"
   - name: "KRW-XRP"
+    active: false
     rate: 1000
     rate_profit: 4.0
     rate_stop_loss: 0.0
@@ -66,6 +89,7 @@ list_coin:
       - module: "check_sell_loss"
         condition: "Required"
   - name: "KRW-USDT"
+    active: true
     rate: 2000
     rate_profit: 4.0
     rate_stop_loss: 0.0
@@ -79,6 +103,7 @@ list_coin:
       - module: "check_sell_profit"
         condition: "Required"
   - name: "KRW-SOL"
+    active: false
     rate: 1000
     rate_profit: 4.0
     rate_stop_loss: 0.0
@@ -98,6 +123,7 @@ list_coin:
       - module: "check_sell_loss"
         condition: "Required"
   - name: "KRW-DOGE"
+    active: false
     rate: 1000
     rate_profit: 4.0
     rate_stop_loss: 0.0
@@ -117,6 +143,7 @@ list_coin:
       - module: "check_sell_loss"
         condition: "Required"
   - name: "KRW-ADA"
+    active: false
     rate: 1000
     rate_profit: 4.0
     rate_stop_loss: 0.0
@@ -136,6 +163,7 @@ list_coin:
       - module: "check_sell_loss"
         condition: "Required"
   - name: "KRW-TRX"
+    active: false
     rate: 1000
     rate_profit: 4.0
     rate_stop_loss: 0.0
