@@ -1,9 +1,9 @@
 import pyupbit
-import datetime
-from simple_common.simpledata import SimpleData
 from hmmlearn import hmm
 import numpy as np
+from simple_common.simpledata import SimpleData
 from config import ConfigInfo
+import datetime
 
 def classify_states_way2(means):
     """
@@ -62,9 +62,9 @@ def classify_states_way2(means):
 
     return stable_state, bullish_state, bearish_state
 
-def check_buy_hmm(coin_info, balances, config, simple_data:SimpleData, print_msg, isForce, isTest):
+def check_sell_hmm(coin_info, balances, config, simple_data:SimpleData, print_msg, isForce, isTest):
     """
-    HMM을 사용하여 매수 시점을 체크하는 함수
+    HMM을 사용하여 매도 시점을 체크하는 함수
     """
     coin_name = coin_info['name']
     define_days = 365  # 1년치 데이터
@@ -112,13 +112,11 @@ def check_buy_hmm(coin_info, balances, config, simple_data:SimpleData, print_msg
     means[:, 0] = means[:, 0] * 100  # 변동률을 퍼센트로 변환
     stable_state, bullish_state, bearish_state = classify_states_way2(means)
 
-    # 매수 신호 조건
-    buy_signal = current_state == stable_state and next_state_probs[bullish_state] > 0.2
+    # 매도 신호 조건
+    sell_signal = current_state == bullish_state and next_state_probs[stable_state] > 0.3
 
-    if buy_signal:
-        print_msg(f"📈 {coin_name} 매수 신호: 상승 가능성 높음!")
-        print_msg(f"현재 상태: {current_state}, 급등 상태 전이 확률: {next_state_probs[bullish_state]:.2%}")
+    if sell_signal:
+        print_msg(f"📉 {coin_name} 매도 신호: 하락 가능성 높음!")
+        print_msg(f"현재 상태: {current_state}, 안정 상태 전이 확률: {next_state_probs[stable_state]:.2%}")
 
-    return buy_signal
-
-    
+    return sell_signal 
