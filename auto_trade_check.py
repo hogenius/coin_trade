@@ -479,7 +479,7 @@ class CoinTrade:
     def is_empty(self, coin_info):
         coin_name = coin_info['name']
         is_empty = coin_info['name'] == "EMPTY"
-        if self.is_test:
+        if self.is_test & is_empty:
             print(f"is_coin_empty : {coin_name} / {is_empty}")
         return is_empty
 
