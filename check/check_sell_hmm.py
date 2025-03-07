@@ -67,6 +67,8 @@ def check_sell_hmm(coin_info, balances, config, simple_data:SimpleData, print_ms
     HMM을 사용하여 매도 시점을 체크하는 함수
     """
     coin_name = coin_info['name']
+    if isTest:
+        print_msg(f"check_sell_hmm {coin_name} 체크 시작합니다.")
     define_days = 365  # 1년치 데이터
 
     # 가장 최근 OHLCV 데이터 확인
@@ -83,9 +85,9 @@ def check_sell_hmm(coin_info, balances, config, simple_data:SimpleData, print_ms
         
         if df is not None and not df.empty:
             simple_data.insert_ohlcv_data(coin_name, df)
-            print_msg(f"✅ {coin_name} 데이터 업데이트 완료!")
+            print_msg(f"{coin_name} 데이터 업데이트 완료!")
         else:
-            print_msg(f"⚠ {coin_name} 데이터 가져오기 실패")
+            print_msg(f"{coin_name} 데이터 가져오기 실패")
             return False
 
     # 최근 데이터 가져오기
@@ -115,8 +117,12 @@ def check_sell_hmm(coin_info, balances, config, simple_data:SimpleData, print_ms
     # 매도 신호 조건
     sell_signal = current_state == bullish_state and next_state_probs[stable_state] > 0.3
 
-    if sell_signal:
-        print_msg(f"📉 {coin_name} 매도 신호: 하락 가능성 높음!")
+    if isTest:
+        if sell_signal:
+            print_msg(f"{coin_name} 매도 신호: 하락 가능성 높음!")
+        else:
+            print_msg(f"{coin_name} 매도 신호: 하락 가능성 없음")
         print_msg(f"현재 상태: {current_state}, 안정 상태 전이 확률: {next_state_probs[stable_state]:.2%}")
+
 
     return sell_signal 
