@@ -2,12 +2,10 @@ import yaml
 from singletone import SingletonInstane
 
 class ConfigInfo(SingletonInstane):
-    def __init__(self):
-        self.LoadConfig()
-        self.LoadSecurity()
     
-    def LoadConfig(self):
-        with open('config.yaml') as f:
+    def LoadConfig(self, fileName):
+        self.configFileName = fileName
+        with open(fileName) as f:
             config_data = yaml.load(f, Loader=yaml.FullLoader)
             self.coin_name = config_data['coin_name']
             self.ma_1 = config_data['ma_line_1']
@@ -21,8 +19,9 @@ class ConfigInfo(SingletonInstane):
             self.polling_sec = config_data['polling_sec']
             
 
-    def LoadSecurity(self):
-        with open('security.yaml') as s:
+    def LoadSecurity(self, fileName):
+        self.securityFileName = fileName
+        with open(fileName) as s:
             security_data = yaml.load(s, Loader=yaml.FullLoader)
             self.access = security_data['key_access']
             self.secret = security_data['key_secret']
@@ -31,5 +30,5 @@ class ConfigInfo(SingletonInstane):
             self.telegram_chat_id = security_data['telegram_chat_id']
 
     def ReloadAll(self):
-        self.LoadConfig()
-        self.LoadSecurity()
+        self.LoadConfig(self.configFileName)
+        self.LoadSecurity(self.securityFileName)

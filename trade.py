@@ -12,6 +12,8 @@ if __name__ == '__main__':
     
     #Messaging.Instance().SetTest(is_test);
     #Messaging.Instance().Send("trade start")
+    ConfigInfo.Instance().LoadConfig('config.yaml')
+    ConfigInfo.Instance().LoadSecurity('security.yaml')
     
     upbit = pyupbit.Upbit(ConfigInfo.Instance().access, ConfigInfo.Instance().secret)
 
