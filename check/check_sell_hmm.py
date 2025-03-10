@@ -126,15 +126,11 @@ def check_sell_hmm(coin_info, balances, config, simple_data:SimpleData, print_ms
 
     arr_send_msg = []
     # 매도 신호 조건
-    sell_signal = current_state == bullish_state and next_state_probs[stable_state] > 0.3
+    sell_signal = current_state == bullish_state and next_state_probs[stable_state] > 0.2
     if isTest:
         if sell_signal:
             arr_send_msg.append(f"{coin_name} 매도 신호: 하락 가능성 높음!")
-        else:
-            arr_send_msg.append(f"{coin_name} 매도 신호: 하락 가능성 없음")
-
-        arr_send_msg.append(f"현재 상태: {current_state} / {current_state_text}, 안정 상태 전이 확률: {next_state_probs[stable_state]:.2%}")
-
-        print_msg(" ".join(arr_send_msg))
+            arr_send_msg.append(f"현재 상태: {current_state} / {current_state_text}, 안정 상태 전이 확률: {next_state_probs[stable_state]:.2%}")
+            print_msg(" ".join(arr_send_msg))
 
     return sell_signal 
