@@ -5,7 +5,7 @@ ma_line_3: 50
 ma_check_sec: 10
 db_path: "../simple_msg.db"
 polling_sec: 1
-loop_sec: 60
+loop_sec: 600
 loop_check_sec: 180
 list_coin:
   - name: "KRW-BTC"
@@ -105,4 +105,4 @@ list_coin:
         condition: "Required"
     check_sell:
       - module: "check_sell_hmm"
-        condition: "Required" 
+        condition: "Required"
