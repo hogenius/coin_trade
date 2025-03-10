@@ -433,8 +433,8 @@ class CoinTrade:
 
         # 1. sys.modules에서 모듈이 이미 import되었는지 확인
         if module_name in sys.modules:
-            if self.is_test:
-                self.print_msg(f"'{module_name}' 모듈이 이미 sys.modules에 있습니다.")
+            # if self.is_test:
+            #     self.print_msg(f"'{module_name}' 모듈이 이미 sys.modules에 있습니다.")
             return sys.modules[module_name]
 
         # 2. 파일 경로에서 모듈 스펙 생성
