@@ -67,8 +67,8 @@ def check_buy_hmm(coin_info, balances, config, simple_data:SimpleData, print_msg
     HMM을 사용하여 매수 시점을 체크하는 함수
     """
     coin_name = coin_info['name']
-    # if isTest:
-    #     print_msg(f"check_buy_hmm {coin_name} 체크 시작합니다.")
+    if isTest:
+        print_msg(f"check_buy_hmm {coin_name} 체크 시작합니다.")
     define_days = 365  # 1년치 데이터
 
     # 가장 최근 OHLCV 데이터 확인
@@ -76,7 +76,8 @@ def check_buy_hmm(coin_info, balances, config, simple_data:SimpleData, print_msg
     if latest_timestamp:
         latest_timestamp = datetime.datetime.strptime(latest_timestamp, "%Y-%m-%d %H:%M:%S")
 
-    now = datetime.datetime.utcnow()
+    now = datetime.datetime.now()
+    print_msg(f"latest_timestamp : {latest_timestamp}, now : {now}")
     if not latest_timestamp or latest_timestamp < now - datetime.timedelta(minutes=15):
         # 최신 데이터가 현재보다 오래된 경우 추가 데이터 로드
         start_date = latest_timestamp if latest_timestamp else now - datetime.timedelta(days=define_days)

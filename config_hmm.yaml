@@ -5,94 +5,10 @@ ma_line_3: 50
 ma_check_sec: 10
 db_path: "../simple_msg.db"
 polling_sec: 1
-loop_sec: 600
+loop_sec: 60
 loop_check_sec: 180
 list_coin:
   - name: "KRW-BTC"
-    active: true
-    rate: 1000
-    rate_profit: 4.0
-    rate_stop_loss: 0.0
-    is_repeat_buy_routine: false
-    is_check_buy_count: true
-    check_buy_count: 10
-    check_buy:
-      - module: "check_buy_hmm"
-        condition: "Required"
-    check_sell:
-      - module: "check_sell_hmm"
-        condition: "Required"
-  - name: "KRW-ETH"
-    active: true
-    rate: 1000
-    rate_profit: 4.0
-    rate_stop_loss: 0.0
-    is_repeat_buy_routine: false
-    is_check_buy_count: true
-    check_buy_count: 10
-    check_buy:
-      - module: "check_buy_hmm"
-        condition: "Required"
-    check_sell:
-      - module: "check_sell_hmm"
-        condition: "Required"
-  - name: "KRW-XRP"
-    active: true
-    rate: 1000
-    rate_profit: 4.0
-    rate_stop_loss: 0.0
-    is_repeat_buy_routine: false
-    is_check_buy_count: true
-    check_buy_count: 10
-    check_buy:
-      - module: "check_buy_hmm"
-        condition: "Required"
-    check_sell:
-      - module: "check_sell_hmm"
-        condition: "Required"
-  - name: "KRW-SOL"
-    active: true
-    rate: 1000
-    rate_profit: 4.0
-    rate_stop_loss: 0.0
-    is_repeat_buy_routine: false
-    is_check_buy_count: true
-    check_buy_count: 10
-    check_buy:
-      - module: "check_buy_hmm"
-        condition: "Required"
-    check_sell:
-      - module: "check_sell_hmm"
-        condition: "Required"
-  - name: "KRW-DOGE"
-    active: true
-    rate: 1000
-    rate_profit: 4.0
-    rate_stop_loss: 0.0
-    is_repeat_buy_routine: false
-    is_check_buy_count: true
-    check_buy_count: 10
-    check_buy:
-      - module: "check_buy_hmm"
-        condition: "Required"
-    check_sell:
-      - module: "check_sell_hmm"
-        condition: "Required"
-  - name: "KRW-ADA"
-    active: true
-    rate: 1000
-    rate_profit: 4.0
-    rate_stop_loss: 0.0
-    is_repeat_buy_routine: false
-    is_check_buy_count: true
-    check_buy_count: 10
-    check_buy:
-      - module: "check_buy_hmm"
-        condition: "Required"
-    check_sell:
-      - module: "check_sell_hmm"
-        condition: "Required"
-  - name: "KRW-TRX"
     active: true
     rate: 1000
     rate_profit: 4.0
