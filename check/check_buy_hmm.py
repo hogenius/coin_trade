@@ -67,6 +67,8 @@ def check_buy_hmm(coin_info, balances, config, simple_data:SimpleData, print_msg
     """
     HMM을 사용하여 매수 시점을 체크하는 함수
     """
+
+    global latest_timestamp_before  # 전역 변수 사용 선언
     coin_name = coin_info['name']
     # if isTest:
     #     print_msg(f"check_buy_hmm {coin_name} 체크 시작합니다.")
