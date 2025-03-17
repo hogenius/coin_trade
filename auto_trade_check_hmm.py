@@ -485,7 +485,7 @@ class CoinTrade:
 
     def coin_main_loop(self, isForce):
         
-        self.print_msg(f"[coin_main_loop]")
+        # self.print_msg(f"[coin_main_loop]")
         try:
             current_date = datetime.datetime.now(datetime.timezone.utc).date()
             if self.last_checked_date is None or self.last_checked_date != current_date:
@@ -537,7 +537,7 @@ class CoinTrade:
             
     def coin_main_check(self, coin_info, balances, isForce):
         
-        self.print_msg(f"[coin_main_check]")
+        # self.print_msg(f"[coin_main_check]")
 
         if coin_info['is_sell'] == True:
             #한번 매수했다가 매도까지 했었습니다.

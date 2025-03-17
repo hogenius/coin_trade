@@ -77,11 +77,11 @@ def check_buy_hmm(coin_info, balances, config, simple_data:SimpleData, print_msg
         latest_timestamp = datetime.datetime.strptime(latest_timestamp, "%Y-%m-%d %H:%M:%S")
 
     now = datetime.datetime.now()
-    print_msg(f"latest_timestamp : {latest_timestamp}, now : {now}")
+    # print_msg(f"latest_timestamp : {latest_timestamp}, now : {now}")
     if not latest_timestamp or latest_timestamp < now - datetime.timedelta(minutes=15):
         # 최신 데이터가 현재보다 오래된 경우 추가 데이터 로드
         start_date = latest_timestamp if latest_timestamp else now - datetime.timedelta(days=define_days)
-        print_msg(f"load start get_ohlcv_from {start_date}")
+        print_msg(f"udpate start get_ohlcv_from {start_date}")
         df = pyupbit.get_ohlcv_from(ticker=coin_name, interval="minute15", fromDatetime=start_date)
         
         if df is not None and not df.empty:
