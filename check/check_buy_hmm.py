@@ -62,13 +62,13 @@ def classify_states_way2(means):
 
     return stable_state, bullish_state, bearish_state
 
-latest_timestamp_before = None
+latest_buiy_check_timestamp = None
 def check_buy_hmm(coin_info, balances, config, simple_data:SimpleData, print_msg, isForce, isTest):
     """
     HMM을 사용하여 매수 시점을 체크하는 함수
     """
 
-    global latest_timestamp_before  # 전역 변수 사용 선언
+    global latest_buiy_check_timestamp  # 전역 변수 사용 선언
     coin_name = coin_info['name']
     # if isTest:
     #     print_msg(f"check_buy_hmm {coin_name} 체크 시작합니다.")
@@ -80,9 +80,9 @@ def check_buy_hmm(coin_info, balances, config, simple_data:SimpleData, print_msg
         latest_timestamp = datetime.datetime.strptime(latest_timestamp, "%Y-%m-%d %H:%M:%S")
 
     is_update = False
-    if latest_timestamp_before == None or (latest_timestamp_before != None and latest_timestamp_before < latest_timestamp):
+    if latest_buiy_check_timestamp == None or (latest_buiy_check_timestamp != None and latest_buiy_check_timestamp < latest_timestamp):
         is_update = True
-    latest_timestamp_before = latest_timestamp
+    latest_buiy_check_timestamp = latest_timestamp
 
     now = datetime.datetime.now()
     # print_msg(f"latest_timestamp : {latest_timestamp}, now : {now}")
