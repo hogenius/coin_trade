@@ -147,14 +147,14 @@ def check_buy_hmm(coin_info, balances, config, simple_data:SimpleData, print_msg
         buy_signal = current_state == bearish_state and next_state_probs[bullish_state] > 0.2
 
     if buy_signal:
-        arr_send_msg.append(f"{coin_name} 매수 신호: 상승 가능성 높음!")
-        arr_send_msg.append(f"현재 상태: {current_state} / {current_state_text}")
+        arr_send_msg.append(f"{coin_name} 매수 신호: 상승 가능성 높음!\n")
+        arr_send_msg.append(f"현재 상태: {current_state} / {current_state_text}\n")
         arr_send_msg.append(f"급등 상태 전이 확률: {next_state_probs[bullish_state]:.2%}")
         print_msg(" ".join(arr_send_msg))
     else :
         if isTest:
-            arr_send_msg.append(f"{coin_name} 매수 신호 없음..")
-            arr_send_msg.append(f"현재 상태: {current_state} / {current_state_text}")
+            arr_send_msg.append(f"{coin_name} 매수 신호 없음..\n")
+            arr_send_msg.append(f"현재 상태: {current_state} / {current_state_text}\n")
             arr_send_msg.append(f"급등 상태 전이 확률: {next_state_probs[bullish_state]:.2%}")
             print_msg(" ".join(arr_send_msg))
 
