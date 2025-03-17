@@ -80,7 +80,7 @@ def check_sell_hmm(coin_info, balances, config, simple_data:SimpleData, print_ms
         latest_timestamp = datetime.datetime.strptime(latest_timestamp, "%Y-%m-%d %H:%M:%S")
 
     is_update = False
-    if latest_timestamp_before != None and latest_timestamp_before < latest_timestamp:
+    if latest_timestamp_before == None or (latest_timestamp_before != None and latest_timestamp_before < latest_timestamp):
         is_update = True
     latest_timestamp_before = latest_timestamp
 
