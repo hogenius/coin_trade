@@ -149,12 +149,12 @@ def check_sell_hmm(coin_info, balances, config, simple_data:SimpleData, print_ms
         arr_send_msg.append(f"안정 전이 확률: {next_state_probs[stable_state]:.2%}\n")
         arr_send_msg.append(f"하락 전이 확률: {next_state_probs[bearish_state]:.2%}")
         print_msg(" ".join(arr_send_msg))
-    else :
-        if isTest:
-            arr_send_msg.append(f"{coin_name} 매도 신호 없음..\n")
-            arr_send_msg.append(f"현재 상태: {current_state} / {current_state_text}\n")
-            arr_send_msg.append(f"안정 전이 확률: {next_state_probs[stable_state]:.2%}\n")
-            arr_send_msg.append(f"하락 전이 확률: {next_state_probs[bearish_state]:.2%}")
-            print_msg(" ".join(arr_send_msg))
+    # else :
+    #     if isTest:
+    #         arr_send_msg.append(f"{coin_name} 매도 신호 없음..\n")
+    #         arr_send_msg.append(f"현재 상태: {current_state} / {current_state_text}\n")
+    #         arr_send_msg.append(f"안정 전이 확률: {next_state_probs[stable_state]:.2%}\n")
+    #         arr_send_msg.append(f"하락 전이 확률: {next_state_probs[bearish_state]:.2%}")
+    #         print_msg(" ".join(arr_send_msg))
 
     return sell_signal 
