@@ -62,13 +62,14 @@ def classify_states_way2(means):
 
     return stable_state, bullish_state, bearish_state
 
+latest_timestamp_before = None
 def check_sell_hmm(coin_info, balances, config, simple_data:SimpleData, print_msg, isForce, isTest):
     """
     HMM을 사용하여 매도 시점을 체크하는 함수
     """
     coin_name = coin_info['name']
-    if isTest:
-        print_msg(f"check_sell_hmm {coin_name} 체크 시작합니다.")
+    # if isTest:
+    #     print_msg(f"check_sell_hmm {coin_name} 체크 시작합니다.")
     define_days = 365  # 1년치 데이터
 
     # 가장 최근 OHLCV 데이터 확인
@@ -77,6 +78,10 @@ def check_sell_hmm(coin_info, balances, config, simple_data:SimpleData, print_ms
         latest_timestamp = datetime.datetime.strptime(latest_timestamp, "%Y-%m-%d %H:%M:%S")
 
     is_update = False
+    if latest_timestamp_before != None and latest_timestamp_before < latest_timestamp:
+        is_update = True
+    latest_timestamp_before = latest_timestamp
+
     now = datetime.datetime.now()
     if not latest_timestamp or latest_timestamp < now - datetime.timedelta(minutes=15):
         # 최신 데이터가 현재보다 오래된 경우 추가 데이터 로드
@@ -87,7 +92,7 @@ def check_sell_hmm(coin_info, balances, config, simple_data:SimpleData, print_ms
         if df is not None and not df.empty:
             is_update = True
             simple_data.insert_ohlcv_data(coin_name, df)
-            print_msg(f"{coin_name} 데이터 업데이트 완료!")
+            # print_msg(f"{coin_name} 데이터 업데이트 완료!")
         else:
             print_msg(f"{coin_name} 데이터 가져오기 실패")
             return False
