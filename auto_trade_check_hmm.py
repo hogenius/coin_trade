@@ -201,7 +201,7 @@ class CoinTrade:
         #         self.coin_buy(coin_info)
 
     async def InitRoutine(self):
-        self.print_msg(f"auto trade start")
+        self.print_msg(f"auto trade check hmm start")
         self.make_coin_list(self.list_coin_info)
         while True:
             self.coin_main_loop(False)
@@ -485,6 +485,7 @@ class CoinTrade:
 
     def coin_main_loop(self, isForce):
         
+        self.print_msg(f"[coin_main_loop]")
         try:
             current_date = datetime.datetime.now(datetime.timezone.utc).date()
             if self.last_checked_date is None or self.last_checked_date != current_date:
