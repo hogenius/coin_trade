@@ -67,8 +67,8 @@ def check_sell_hmm(coin_info, balances, config, simple_data:SimpleData, print_ms
     HMM을 사용하여 매도 시점을 체크하는 함수
     """
     coin_name = coin_info['name']
-    # if isTest:
-    #     print_msg(f"check_sell_hmm {coin_name} 체크 시작합니다.")
+    if isTest:
+        print_msg(f"check_sell_hmm {coin_name} 체크 시작합니다.")
     define_days = 365  # 1년치 데이터
 
     # 가장 최근 OHLCV 데이터 확인
@@ -76,7 +76,8 @@ def check_sell_hmm(coin_info, balances, config, simple_data:SimpleData, print_ms
     if latest_timestamp:
         latest_timestamp = datetime.datetime.strptime(latest_timestamp, "%Y-%m-%d %H:%M:%S")
 
-    now = datetime.datetime.utcnow()
+    is_update = False
+    now = datetime.datetime.now()
     if not latest_timestamp or latest_timestamp < now - datetime.timedelta(minutes=15):
         # 최신 데이터가 현재보다 오래된 경우 추가 데이터 로드
         start_date = latest_timestamp if latest_timestamp else now - datetime.timedelta(days=define_days)
@@ -84,11 +85,15 @@ def check_sell_hmm(coin_info, balances, config, simple_data:SimpleData, print_ms
         df = pyupbit.get_ohlcv_from(ticker=coin_name, interval="minute15", fromDatetime=start_date)
         
         if df is not None and not df.empty:
+            is_update = True
             simple_data.insert_ohlcv_data(coin_name, df)
             print_msg(f"{coin_name} 데이터 업데이트 완료!")
         else:
             print_msg(f"{coin_name} 데이터 가져오기 실패")
             return False
+        
+    if is_update == False :
+        return False
 
     # 최근 데이터 가져오기
     start_date = now - datetime.timedelta(days=define_days)
@@ -127,9 +132,14 @@ def check_sell_hmm(coin_info, balances, config, simple_data:SimpleData, print_ms
     arr_send_msg = []
     # 매도 신호 조건
     sell_signal = current_state == bullish_state and next_state_probs[stable_state] > 0.2
-    if isTest:
-        if sell_signal:
-            arr_send_msg.append(f"{coin_name} 매도 신호: 하락 가능성 높음!")
+    
+    if sell_signal:
+        arr_send_msg.append(f"{coin_name} 매도 신호: 하락 가능성 높음!")
+        arr_send_msg.append(f"현재 상태: {current_state} / {current_state_text}, 안정 상태 전이 확률: {next_state_probs[stable_state]:.2%}")
+        print_msg(" ".join(arr_send_msg))
+    else :
+        if isTest:
+            arr_send_msg.append(f"{coin_name} 매도 신호 없음..")
             arr_send_msg.append(f"현재 상태: {current_state} / {current_state_text}, 안정 상태 전이 확률: {next_state_probs[stable_state]:.2%}")
             print_msg(" ".join(arr_send_msg))
 
